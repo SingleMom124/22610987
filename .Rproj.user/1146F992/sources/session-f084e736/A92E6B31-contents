@@ -1,0 +1,105 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+```{r}
+
+rm(list = ls()) # Clean your environment:
+gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
+library(tidyverse)
+list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+```
+
+# Organizing the main README:
+
+This README he will be grading so it is important that the code are sourced here appropriately and figures displayed properly.
+
+First create the project as you normally would...
+
+```{r}
+# Copy directory and run
+
+fmxdat::make_project(Open = T)
+
+```
+
+... Now, Nico says that he likes each question and their code to be in separate folders. More specifically, creating functions for what I am trying to achieve in each question and placing them in the code folders, sourcing them where appropriate.
+
+Nico provided code to do this. I Modified it as follows...
+
+```{r eval=FALSE, include=FALSE}
+# Now creating separate folders with Texavier files...
+
+Texevier::create_template(directory = "C:/R_Stuff/Data_Science_Moc/22610987", template_name = "Question1")
+Texevier::create_template(directory = "C:/R_Stuff/Data_Science_Moc/22610987", template_name = "Question2")
+Texevier::create_template(directory = "C:/R_Stuff/Data_Science_Moc/22610987", template_name = "Question3")
+Texevier::create_template(directory = "C:/R_Stuff/Data_Science_Moc/22610987", template_name = "Question4")
+
+# I've set this to not run again as the folders are already created. Dont need to include this in the prac.
+```
+
+Now unzip all of the data and put them in their respective question data folders.
+
+... From here you can start with the questions.
+
+### Question 1:
+
+So remember to call your functions from the code folders of the question you are answering.
+
+```{r}
+# First calling the functions from my question 1 code folder...
+
+library(tidyverse)
+list.files('Question1/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+# Running the function...
+
+data <- reader("Question1/data")
+```
+
+## Question 1.a:
+
+```{r}
+
+# Box and whisker plot...
+
+a_plot <- plotter(data)
+print(a_plot)
+
+```
+## Question 1.b:
+
+Decomposition bar graph...
+
+```{r}
+
+b_plot <- decomposer(data)
+print(b_plot)
+
+# Still need to figure out how to arrange and put SA first
+```
+## Question 2:
+
+Loading functions and data...
+
+```{r}
+library(tidyverse)
+library(readr)
+list.files('Question2/code/', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+data <- read_rds("Question2/data/WineMag.rds")
+```
+
+
+First doing the bar plot and the table...
+
+```{r}
+plot2a <- bar_plotter(data)
+print(plot2a)
+
+table2a <- word_table(data)
+print(table2a)
+```
+
