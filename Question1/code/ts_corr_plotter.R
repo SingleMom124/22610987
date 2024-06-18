@@ -10,10 +10,10 @@ ts_corr_plotter <- function(male_data, female_data) {
         ggplot(aes(x = Year, y = Correlation)) +
         geom_line(size = 1, color = "black") +
         theme_bw() +
-        labs(title = "Correlation Between Current and Future Popular Baby Names (Boys)",
+        labs(title = "Boy Names",
              x = "",
              y = "") +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        theme(plot.title = element_text(size = 8))
 
     # Plot for girls
 
@@ -21,10 +21,10 @@ ts_corr_plotter <- function(male_data, female_data) {
         ggplot(aes(x = Year, y = Correlation)) +
         geom_line(size = 1, color = "black") +
         theme_bw() +
-        labs(title = "Correlation Between Current and Future Popular Baby Names (Girls)",
+        labs(title = "Girl Names",
              x = "",
              y = "Spearman Correlation") +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        theme(plot.title = element_text(size = 8))
 
     # Calculate average correlation and create plot
 
@@ -35,9 +35,10 @@ ts_corr_plotter <- function(male_data, female_data) {
         ggplot(aes(x = Year, y = Mean_Corr)) +
         geom_line(size = 1, color = "black") +
         theme_bw() +
-        labs(title = "Average Correlation Between Boys and Girls in Baby Names",
+        labs(title = "Both",
+             x = "",
              y = "") +
-        theme(axis.text.x = element_text(angle = 45, hjust = 1))
+        theme(plot.title = element_text(size = 8))
 
     arranged_plots <- ggarrange(corr_plot_boys, corr_plot_girls, corr_plot,
                                 ncol = 1, nrow = 3)

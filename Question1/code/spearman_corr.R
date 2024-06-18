@@ -1,5 +1,10 @@
 spearman_corr <- function(data, gender){
 
+    data <- data %>%
+        group_by(Year, Gender, Name) %>%
+        summarize(Count = sum(Count)) %>%
+        ungroup()
+
     # First starting this function off by writing some other functions:
 
     # A function to Identify the 25 most popular names...

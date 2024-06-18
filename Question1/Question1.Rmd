@@ -3,7 +3,7 @@
 # Remove comments and add values where applicable.
 # The descriptions below should be self-explanatory
 
-title: "Helping You Write Academic Papers in R using Texevier"
+title: "Cultural Dynamics and Persistence in Baby Naming Trends: An Analysis of Influences and Longevity in the United States"
 #subtitle: "This will appear as Right Header"
 
 documentclass: "elsarticle"
@@ -25,23 +25,16 @@ Thesis_FP: FALSE
 # --------- Front Page
 # Comment: ----- Follow this pattern for up to 5 authors
 AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
-Author1: "Jane Doe^[__Contributions:__  \\newline _The authors would like to thank no institution for money donated to this project. Thank you sincerely._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
-Ref1: "Some Institution, Cape Town, South Africa" # First Author's Affiliation
-Email1: "nfkatzke\\@gmail.com" # First Author's Email address
+Author1: "Joshua-Connor Knapp^[__Contributions:__  \\So, how about that airline food?]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Ref1: "Flex Offenders, Local Garage Gym, South Africa" # First Author's Affiliation
+Email1: "joshuaconnok\\@gmail.com" # First Author's Email address
 
-Author2: "John Smith"
-Ref2: "Some other Institution, Cape Town, South Africa"
-Email2: "John\\@gmail.com"
-CommonAffiliation_12: TRUE # If Author 1 and 2 have a common affiliation. Works with _13, _23, etc.
-
-Author3: "John Doe"
-Email3: "Joe\\@gmail.com"
 
 CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
 
 # Comment out below to remove both. JEL Codes only given if keywords also given.
-keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
-JELCodes: "L250 \\sep L100"
+#keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
+#JELCodes: "L250 \\sep L100"
 
 # ----- Manage headers and footers:
 #BottomLFooter: $Title$
@@ -92,7 +85,7 @@ output:
     fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
     fig_height: 3.5
 abstract: |
-  Abstract to be written here. The abstract should not be too long and should provide the reader with a good understanding what you are writing about. Academic papers are not like novels where you keep the reader in suspense. To be effective in getting others to read your paper, be as open and concise about your findings here as possible. Ideally, upon reading your abstract, the reader should feel he / she must read your paper in entirety.
+ This report explores the evolving landscape of baby naming trends in the United States, highlighting the influence of cultural factors such as popular media and prominent public figures. By analyzing data spanning from 1910 to 2014, we examine the persistence of popular names and identify gender-specific patterns. Our findings reveal a significant decline in the persistence of boys' names since the 1990s, contrasted with the resilience of girls' names. Additionally, we investigate the impact of actor names on naming conventions using regression models, uncovering substantial correlations between popular actor names and increased name counts in movie titles. These insights underscore the interplay between cultural dynamics and societal preferences in shaping naming trends.
 ---
 
 <!-- First: Set your default preferences for chunk options: -->
@@ -100,20 +93,21 @@ abstract: |
 <!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
 
 ```{r setup, include=FALSE}
+rm(list = ls()) # Clean your environment:
+gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
+
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.width = 6, fig.height = 5, fig.pos="H", fig.pos = 'H')
-# Note: Include = FALSE implies the code is executed, but not printed in your pdf.
-# warning and message = FALSE implies ugly messages and warnings are removed from your pdf.
-# These should be picked up when you execute the command chunks (code sections below) in your rmd, not printed in your paper!
 
-# Lets load in example data, and see how this can be stored and later called from your 'data' folder.
-if(!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
-Example_data <- Texevier::Ex_Dat
+library(readr)
+list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
 
-# Notice that as you are working in a .Rproj file (I am assuming you are) - the relative paths of your directories start at your specified root.
-# This means that when working in a .Rproj file, you never need to use getwd() - it is assumed as your base root automatically.
-write_rds(Example_data, path = "data/Example_data.rds")
 
+
+baby_names <- read_rds("data/Baby_Names_By_US_State.rds")
+charts <- read_rds("data/charts.rds")
+hbo_titles <- read_rds("data/HBO_titles.rds")
+hbo_credits <- read_rds("data/HBO_credits.rds")
 ```
 
 
@@ -123,288 +117,95 @@ write_rds(Example_data, path = "data/Example_data.rds")
 
 # Introduction \label{Introduction}
 
-References are to be made as follows: @fama1997[p. 33] and @grinold2000 Such authors could also be referenced in brackets [@grinold2000] and together [@fama1997 \& @grinold2000]. Source the reference code from scholar.google.com by clicking on ``cite'' below article name. Then select BibTeX at the bottom of the Cite window, and proceed to copy and paste this code into your ref.bib file, located in the directory's Tex folder. Open this file in Rstudio for ease of management, else open it in your preferred Tex environment. Add and manage your article details here for simplicity - once saved, it will self-adjust in your paper.
-
-> I suggest renaming the top line after \@article, as done in the template ref.bib file, to something more intuitive for you to remember. Do not change the rest of the code. Also, be mindful of the fact that bib references from google scholar may at times be incorrect. Reference Latex forums for correct bibtex notation.
-
-To reference a section, you have to set a label using ``\\label'' in R, and then reference it in-text as e.g. referencing a later section, Section \ref{Meth}.
-
-Writing in Rmarkdown is surprizingly easy - see [this website](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) cheatsheet for a summary on writing Rmd writing tips.
+The realm of baby naming trends in the United States has evolved significantly over the years, influenced by a myriad of factors ranging from popular culture to historical events. Understanding these influences not only provides insights into societal trends but also reflects broader cultural shifts. As we delve into the data, we observe intriguing patterns such as the impact of popular movie characters, prominent political figures, celebrities, and even musical sensations on naming practices. Moreover, analyzing the longevity of these trends reveals whether certain names endure over generations or whether others quickly fade into obscurity. Interestingly, recent findings suggest that while overall naming trends may be stabilizing, gender-specific analyses unveil distinct patterns influenced by factors like actor names. This intersection of data analytics and cultural influence offers a fascinating lens through which to explore the dynamic landscape of baby naming in the US.
 
 # Data  {-}
 
-Notice how I used the curly brackets and dash to remove the numbering of the data section.
-
-Discussion of data should be thorough with a table of statistics and ideally a figure.
-
-In your tempalte folder, you will find a Data and a Code folder. In order to keep your data files neat, store all of them in your Data folder. Also, I strongly suggest keeping this Rmd file for writing and executing commands, not writing out long pieces of data-wrangling. In the example below, I simply create a ggplot template for scatter plot consistency. I suggest keeping all your data in a data folder.
+This report primarily considers, three data sets. All take the form of panel data. The first details baby naming conventions, providing the the count of a particular name for years ranging from 1910 to 2014. The other two data sets are comprised of actor credits and titles released by HBO. Given that both of these data sets shared an ID column referring to a specific title, these data sets were joined into a single. It details, a titles release year, its name, who acted in it, the character they played, its popularity, review score, and so on.  
 
 <!-- The following is a code chunk. It must have its own unique name (after the r), or no name. After the comma follows commands for R which are self-explanatory. By default, the code and messages will not be printed in your pdf, just the output: -->
 
-```{r Figure1,  warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure1}", fig.ext = 'png', fig.height = 3, fig.width = 6}
+# Naming Conventions {-}
 
-  # This is just a random plot to show you a plot. This is done if the getwd() does not point to your Template's directory.
-  # Set WD below to your project's working directory.
+In examining baby naming trends in the United States, one intriguing aspect is the persistence of popular names over time. The agency has tasked me with analyzing the rank correlation, specifically using Spearman rank correlation, between each year's 25 most popular boys' and girls' names and those of the subsequent three years. This approach allows us to assess whether today's favored names continue to dominate in future years, providing insights into the longevity of naming trends.As such, this investigation aims to confirm or refute the agency's suspicion that since the 1990s, popular name trends have shown reduced persistence compared to earlier decades.
 
-  g <-
-  ggplot(data = mtcars) +
-  geom_point(aes(x = disp, y = hp, color = cyl)) +
-  theme_bw() +
-  # theme(legend.position = "none") +
-  theme(plot.title = element_text(size = 10)) +
-  theme(axis.title = element_text(size = 10),
-        axis.title.x = element_text()) +
-  labs(y = "y-axis", x = "x-axis", title = "Some amazing plot")
+```{r,  warning =  FALSE, fig.align = 'center', fig.cap = "Spearman Correlations Over Time.\\label{Figure1}", fig.ext = 'png', fig.height = 5, fig.width = 8}
 
-g
+# Getting the plot data
+
+plot_data_M <- spearman_corr(baby_names, gender = "M")
+plot_data_F <- spearman_corr(baby_names, gender = "F")
+
+# Plotting the data
+
+plots <- ts_corr_plotter(plot_data_M, plot_data_F)
+plots
+  
+```
+\hfill
+
+<!-- hfill can be used to create a space, like here between text and table. -->
+
+As can be seen from the tables above, there is a clear divergence in persistence between boys' and girls' naming trends. Boys' names have exhibited a notable decline in staying power since the 90's when compared to earlier decades. In other words, boys have a faster turnover in naming preferences. In contrast, girls' names have shown greater resilience, consistently maintaining or exceeding their popularity levels from the 1990s. While girls' names experienced fluctuations with occasional peaks, they generally reverted to similar levels over time. When examining both genders collectively, the overall trend reveals a decline in the persistence of popular names across the board. This finding underscores shifting societal influences and perhaps evolving cultural dynamics such as interest in cinematic media.
+
+# Cultural Influences {-}
+
+We see further in the figures below, showing that the top five most popular names overall have all past their peaks for both males and females and that naming conventions, while sticky, do not persist indefinitely. While their are likely many cultural and sociological factors that impact on this change, media is likely one of them. 
+
+```{r,  warning =  FALSE, fig.align = 'center', fig.cap = "Top 5 Male Names Over Time.\\label{Figure2}", fig.ext = 'png', fig.height = 5, fig.width = 8}
+
+# Plotting the top 5 persistently popular names per gender throughout the years
+
+top_male_names <- name_plotter(baby_names, gender = "M")
+top_male_names
 
 ```
 
-To make your graphs look extra nice in latex world, you could use Tikz device. Replace dev - 'png' with 'tikz' in the chunk below. Notice this makes the build time longer and produces extra tex files - so if you are comfortable with this, set your device to Tikz and try it out:
+```{r,  warning =  FALSE, fig.align = 'center', fig.cap = "Top 5 Female Names Over Time.\\label{Figure3}", fig.ext = 'png', fig.height = 5, fig.width = 8}
 
-```{r Figure2, warning =  FALSE, fig.align = 'center', fig.cap = "Caption Here \\label{Figure2}", fig.height = 3, fig.width = 6, dev = 'png'}
+# Plotting the top 5 persistently popular names per gender throughout the years
 
-ExampleData <- read_rds( "data/Example_data.rds")
-
-source("code/Example_Plot_Scatter.R") # Load a function from your 'code' folder. This e.g. plots scatters to your own preferences.
-source( "code/Data_Create.R") #
-
-ExampleData <- Data_Create(N = 100) # Same as the ExampleData loaded above - this is just a function to create the stored data.
-
-g <- Example_Plot_Scatter(DataInput = ExampleData,
-                          X = "Height_Score",
-                          Y = "Weight_Score",
-                          Z = "Agility_Score",
-                          Theme = theme_bw(), # run ?ggthemes for other themes.
-                          Title = "", # I prefer to use the caption set above.
-                          Ylab = "Height",
-                          Xlab = "Lenght",
-                          LegendTitle = "Agility",
-                          TitleSize = 10,
-                          LabSize = 10)
-
-g
-
-# Although the functions above are really simple, the principle is simple: containing calculations and data wrangling in their own functions will make this template much cleaner and more manageable.
-# When you start working, delete these meaningless functions and replace with your own...
+top_female_names <- name_plotter(baby_names, gender = "F")
+top_female_names
 
 ```
+\hfill
 
-To reference the plot above, add a ``\\label'' after the caption in the chunk heading, as done above. Then reference the plot as such: As can be seen, Figures \ref{Figure1}  and \ref{Figure2} are excellent, with Figure \ref{Figure2} being particularly aesthetically pleasing due to its device setting of Tikz. The nice thing now is that it correctly numbers all your figures (and sections or tables) and will update if it moves. The links are also dynamic.
+<!-- hfill can be used to create a space, like here between text and table. -->
 
-I very strongly suggest using ggplot2 (ideally in combination with dplyr) using the ggtheme package to change the themes of your figures.
+We examine this by first joining the baby names data set to the actors and titles data set according to actor name and the titles release year. This gives us the count of a particular name in accordance with the name of the actor in the title for that titles release year. Using this data set, a dummy variable was created to indicate whether an actor with one of the top 5 most popular names for males and females was present. Subsequently, this dummy variable, along with a titles popularity and review score, was regressed using on the count of a name in the titles release year using Ordinary Least Squares (POLS) to examine its impact. 
 
-Also note the information that I have placed above the chunks in the code chunks for the figures. You can edit any of these easily - visit the Rmarkdown webpage for more information.
+```{r, results = 'asis'}
 
-# Splitting a page
+actor_names_M <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "M")
+actor_names_M
 
-You can also very easily split a page using built-in Pandoc formatting. I comment this out in the code (as this has caused issues building the pdf for some users - which I presume to be a Pandoc issue), but you are welcome to try it out yourself by commenting out the following section in your Rmd file.
-
-
-<!-- :::::: {.columns data-latex="[T]"} -->
-<!-- ::: {.column data-latex="{0.7\textwidth}"} -->
-<!-- ```{r, echo=FALSE, fig.width=4, fig.height=4} -->
-<!-- par(mar = c(4, 4, .2, .1)) -->
-<!-- plot(cars, pch = 19) -->
-<!-- ``` -->
-<!-- ::: -->
-<!-- ::: {.column data-latex="{0.05\textwidth}"} -->
-<!-- \ -->
-<!-- ::: -->
-<!-- ::: {.column data-latex="{0.2\textwidth}"} -->
-<!-- \scriptsize -->
-
-<!-- ## Data {-} -->
-<!-- The figure on the left-hand side shows the `cars` data. -->
-
-<!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do -->
-<!-- eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut -->
-<!-- enim ad minim veniam, quis nostrud exercitation ullamco laboris -->
-<!-- nisi ut aliquip ex ea commodo consequat. -->
-<!-- ::: -->
-<!-- :::::: -->
-
-
-
-#  Methodology \label{Meth}
-
-## Subsection
-Ideally do not overuse subsections. It equates to bad writing.^[This is an example of a footnote by the way. Something that should also not be overused.]
-
-## Math section
-
-Equations should be written as such:
-
-\begin{align}
-\beta = \sum_{i = 1}^{\infty}\frac{\alpha^2}{\sigma_{t-1}^2} \label{eq1} \\
-\int_{x = 1}^{\infty}x_{i} = 1 \notag
-\end{align}
-
-If you would like to see the equations as you type in Rmarkdown, use $ symbols instead (see this for yourself by adjusted the equation):
-
-$$
-\beta = \sum_{i = 1}^{\infty}\frac{\alpha^2}{\sigma_{t-1}^2} \\
-\int_{x = 1}^{\infty}x_{i} = 1
-$$
-
-Note the equation above - this should appear in math in Rstudio. Writing nice math requires practice. Note I used a forward slashes to make a space in the equations. I can also align equations using  __\&__, and set to numbering only the first line. Now I will have to type ``begin equation'' which is a native \LaTeX command. Here follows a more complicated equation that you want aligned (using \& sign) and numbered:
-
-
-\begin{align}
-	y_t &= c + B(L) y_{t-1} + e_t   \label{eq2}    \\ \notag
-	e_t &= H_t^{1/2}  z_t ; \quad z_t \sim  N(0,I_N) \quad \& \quad H_t = D_tR_tD_t \\ \notag
-		D_t^2 &= {\sigma_{1,t}, \dots, \sigma_{N,t}}   \\ \notag
-		\sigma_{i,t}^2 &= \gamma_i+\kappa_{i,t}  v_{i, t-1}^2 +\eta_i  \sigma_{i, t-1}^2, \quad \forall i \\ \notag
-		R_{t, i, j} &= {diag(Q_{t, i, j}}^{-1}) . Q_{t, i, j} . diag(Q_{t, i, j}^{-1})  \\ \notag
-		Q_{t, i, j} &= (1-\alpha-\beta)  \bar{Q} + \alpha  z_t  z_t'  + \beta  Q_{t, i, j} \notag
-\end{align}
-
-Note that in \ref{eq2} I have aligned the equations by the equal signs. I also want only one tag, and I create spaces using ``quads''.
-
-See if you can figure out how to do complex math using the two examples provided in \ref{eq1} and \ref{eq2}.
-
-<!-- $$ -->
-<!-- This is a commented out section in the writing part. -->
-<!-- Comments are created by highlighting text, amnd pressing CTL+C -->
-<!-- \\begin{align} -->
-<!-- \\beta = \\alpha^2 -->
-<!-- \end{align} -->
-<!-- $$ -->
-
-# Results
-
-Tables can be included as follows. Use the _xtable_ (or kable) package for tables. Table placement = H implies Latex tries to place the table Here, and not on a new page (there are, however, very many ways to skin this cat. Luckily there are many forums online!).
-
-
-```{r ShortTable, results = 'asis'}
-
-library(xtable)
-data <- mtcars[1:5,] %>% tibble::as_tibble()
-
-table <- xtable(data, caption = "Short Table Example \\label{tab1}")
-  print.xtable(table,
-             # tabular.environment = "longtable",
-             floating = TRUE,
-             table.placement = 'H',
-             # scalebox = 0.3,
-             comment = FALSE,
-             caption.placement = 'bottom'
-             )
-
-```
-
-To reference calculations __in text__, _do this:_ From table \ref{tab1} we see the average value of mpg is `r mean(mtcars[1:5,]$mpg)`.
-
-Including tables that span across pages, use the following (note that I add below the table: ``continue on the next page''). This is a neat way of splitting your table across a page.
-
-Use the following default settings to build your own possibly long tables. Note that the following will fit on one page if it can, but cleanly spreads over multiple pages:
-
-```{r LongTable, results = 'asis'}
-
-library(xtable)
-
-data = mtcars %>% tibble::as_tibble()
-  addtorow          <- list()
-  addtorow$pos      <- list()
-  addtorow$pos[[1]] <- c(0)
-  addtorow$command  <- c(paste("\\hline \n",
-                               "\\endhead \n",
-                               "\\hline \n",
-                               "{\\footnotesize Continued on next page} \n",
-                               "\\endfoot \n",
-                               "\\endlastfoot \n",sep=""))
-table <- xtable(data, caption = "Long Table Example")
-  print.xtable(table,
-             tabular.environment = "longtable",
-             floating = FALSE, # Leave this as is.
-             table.placement = 'H', # Leave this as is.
-             booktabs = T, # Aesthetics
-             include.rownames = FALSE,  # Typically you don't want this in a table.
-             add.to.row = addtorow, # For adding the Continued on next page part...
-             comment = FALSE,
-             caption.placement = 'top',  # Where do you want the caption?
-             size="\\fontsize{12pt}{13pt}\\selectfont"  # Size of text in table..
-             )
-# See https://cran.r-project.org/web/packages/xtable/vignettes/xtableGallery.pdf for table inspiration
 ```
 
 \hfill
 
 <!-- hfill can be used to create a space, like here between text and table. -->
 
-
-## Huxtable
-
-Huxtable is a very nice package for making working with tables between Rmarkdown and Tex easier.
-
-This cost some adjustment to the Tex templates to make it work, but it now works nicely.
-
-See documentation for this package [here](https://hughjonesd.github.io/huxtable/huxtable.html). A particularly nice addition of this package is for making the printing of regression results a joy (see [here](https://hughjonesd.github.io/huxtable/huxtable.html#creating-a-regression-table)). Here follows an example:
-
-
-If you are eager to use huxtable, comment out the Huxtable table in the Rmd template, and uncomment the colortbl package in your Rmd's root.
-
-Note that I do not include this in the ordinary template, as some latex users have complained it breaks when they build their Rmds (especially those using tidytex - I don't have this problem as I have the full Miktex installed on mine). Up to you, but I strongly recommend installing the package manually and using huxtable. To make this work, uncomment the _Adding additional latex packages_ part in yaml at the top of the Rmd file. Then comment out the huxtable example in the template below this line. Reknit, and enjoy.
+The Breusch-Pagan test results indicate significant heteroscedasticity, suggesting variability in error terms across observations, reinforcing the need for random effects or fixed effects models to account for such variance. Once accounted for, the results for male names highlight significant coefficients across all models, all of which indicate that an actor having one of the top 5 names greatly impacts on name counts for those names. The Hausman test further indicates that the Fixed Effects model is preferable due to its lower P-value, suggesting that unobserved heterogeneity is indeed present and should be accounted for.
 
 ```{r, results = 'asis'}
 
-if(!require(huxtable)) install.packages(huxtable)
-library(huxtable)
-data(diamonds, package = 'ggplot2')
-Title <- "Regression Output"
-Label <- "Reg01"
-lm1 <- lm(price ~ carat, diamonds)
-lm2 <- lm(price ~ depth, diamonds)
-lm3 <- lm(price ~ carat + depth, diamonds)
-htab <-
-huxreg(lm1, lm2, lm3,
-                statistics = c(N = "nobs", R2 = "r.squared"),
-                note = "%stars%.") %>%
-  set_caption(Title) %>%
-  set_label(Label)
-# More settings:
-font_size(htab) <- 12
-# Let's change regression names: this is slightly hacky, but works. Comment out this section to see what the default looks like:
-  Names <- c( "Reg1", "Reg2", "Reg3")
-  for(i in 1:length(Names)) {
-    htab[1,][[1+i]] <- Names[i]
-  }
-# Now simply call the table:
-htab
+actor_names_F <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "F")
+actor_names_F
 
 ```
 
-FYI - R also recently introduced the gt package, which is worthwhile exploring too.
+\hfill
 
-# Lists
+<!-- hfill can be used to create a space, like here between text and table. -->
 
-To add lists, simply using the following notation
+We see similar results for female names, however in this case the Hausman test results provide a larger P-value, indicating that endogeneity may be present and that the Random Effects (RE) for controlling unobserved heterogeneity in this analysis. Despite this, we still see a large positive impact on name counts when actress's have one of the top 5 names. Overall, for both male and female names, these findings underscore the substantial impact of actor name popularity naming conventions, providing valuable insights into consumer preferences.
 
-* This is really simple
-
-    + Just note the spaces here - writing in R you have to sometimes be pedantic about spaces...
-
-* Note that Rmarkdown notation removes the pain of defining \LaTeX environments!
 
 # Conclusion
 
-I hope you find this template useful. Remember, stackoverflow is your friend - use it to find answers to questions. Feel free to write me a mail if you have any questions regarding the use of this package. To cite this package, simply type citation("Texevier") in Rstudio to get the citation for @Texevier (Note that uncited references in your bibtex file will not be included in References).
+In conclusion, our exploration into baby naming trends in the United States has unveiled a dynamic landscape influenced by a multitude of cultural and societal factors. Our analysis has shown that while overall naming trends appear to be stabilizing, there are distinct gender-specific patterns: boys' names exhibit a noticeable decline in persistence since the 1990s, whereas girls' names demonstrate greater resilience over time. These trends reflect evolving cultural dynamics and possibly changing preferences influenced by various media and cultural icons.
 
-<!-- Make title of bibliography here: -->
-<!-- \newpage -->
+Moreover, our investigation into the impact of actor names on baby naming conventions has revealed compelling insights. By linking baby names data with actor credits and title information, we observed significant correlations between the presence of top 5 actor names and increased name counts in movie titles. The adoption of Fixed Effects models, supported by the Hausman test, underscores the importance of accounting for unobserved heterogeneity in such analyses, enhancing the validity of our findings.
 
-\newpage
-
-# References {-}
-
-<div id="refs"></div>
-
-
-# Appendix {-}
-
-## Appendix A {-}
-
-Some appendix information here
-
-## Appendix B {-}
-
+Overall, these findings underscore the intricate interplay between cultural influences, media representation, and societal preferences in shaping baby naming trends. They provide valuable insights for understanding consumer behavior and cultural dynamics in contemporary society, highlighting the enduring relevance of popular culture in influencing naming practices.
