@@ -25,16 +25,15 @@ Thesis_FP: FALSE
 # --------- Front Page
 # Comment: ----- Follow this pattern for up to 5 authors
 AddTitle: TRUE # Use FALSE when submitting to peer reviewed platform. This will remove author names.
-Author1: "Joshua-Connor Knapp^[__Contributions:__  \\So, how about that airline food?]"  # First Author - note the thanks message displayed as an italic footnote of first page.
+Author1: "Joshua-Connor Knapp^[__Contributions:__  \\newline _So, how about that airline food?._]"  # First Author - note the thanks message displayed as an italic footnote of first page.
 Ref1: "Flex Offenders, Local Garage Gym, South Africa" # First Author's Affiliation
 Email1: "joshuaconnok\\@gmail.com" # First Author's Email address
-
 
 CorrespAuthor_1: TRUE  # If corresponding author is author 3, e.g., use CorrespAuthor_3: TRUE
 
 # Comment out below to remove both. JEL Codes only given if keywords also given.
 #keywords: "Multivariate GARCH \\sep Kalman Filter \\sep Copula" # Use \\sep to separate
-#JELCodes: "L250 \\sep L100"
+#ELCodes: "L250 \\sep L100"
 
 # ----- Manage headers and footers:
 #BottomLFooter: $Title$
@@ -85,7 +84,7 @@ output:
     fig_width: 3.5 # Adjust default figure sizes. This can also be done in the chunks of the text.
     fig_height: 3.5
 abstract: |
- This report explores the evolving landscape of baby naming trends in the United States, highlighting the influence of cultural factors such as popular media and prominent public figures. By analyzing data spanning from 1910 to 2014, we examine the persistence of popular names and identify gender-specific patterns. Our findings reveal a significant decline in the persistence of boys' names since the 1990s, contrasted with the resilience of girls' names. Additionally, we investigate the impact of actor names on naming conventions using regression models, uncovering substantial correlations between popular actor names and increased name counts in movie titles. These insights underscore the interplay between cultural dynamics and societal preferences in shaping naming trends.
+  This report explores the evolving landscape of baby naming trends in the United States, highlighting the influence of cultural factors such as popular media and prominent public figures. By analyzing data spanning from 1910 to 2014, we examine the persistence of popular names and identify gender-specific patterns. Our findings reveal a significant decline in the persistence of boys' names since the 1990s, contrasted with the resilience of girls' names. Additionally, we investigate the impact of actor names on naming conventions using regression models, uncovering substantial correlations between popular actor names and increased name counts in movie titles. These insights underscore the interplay between cultural dynamics and societal preferences in shaping naming trends.
 ---
 
 <!-- First: Set your default preferences for chunk options: -->
@@ -93,6 +92,7 @@ abstract: |
 <!-- If you want a chunk's code to be printed, set echo = TRUE. message = FALSE stops R printing ugly package loading details in your final paper too. I also suggest setting warning = FALSE and checking for warnings in R, else you might find ugly warnings in your paper. -->
 
 ```{r setup, include=FALSE}
+
 rm(list = ls()) # Clean your environment:
 gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
 
@@ -102,12 +102,11 @@ library(tidyverse)
 library(readr)
 list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
 
-
-
 baby_names <- read_rds("data/Baby_Names_By_US_State.rds")
 charts <- read_rds("data/charts.rds")
 hbo_titles <- read_rds("data/HBO_titles.rds")
 hbo_credits <- read_rds("data/HBO_credits.rds")
+
 ```
 
 
@@ -123,13 +122,13 @@ The realm of baby naming trends in the United States has evolved significantly o
 
 This report primarily considers, three data sets. All take the form of panel data. The first details baby naming conventions, providing the the count of a particular name for years ranging from 1910 to 2014. The other two data sets are comprised of actor credits and titles released by HBO. Given that both of these data sets shared an ID column referring to a specific title, these data sets were joined into a single. It details, a titles release year, its name, who acted in it, the character they played, its popularity, review score, and so on.  
 
-<!-- The following is a code chunk. It must have its own unique name (after the r), or no name. After the comma follows commands for R which are self-explanatory. By default, the code and messages will not be printed in your pdf, just the output: -->
-
-# Naming Conventions {-}
+# Naming Conventions 
 
 In examining baby naming trends in the United States, one intriguing aspect is the persistence of popular names over time. The agency has tasked me with analyzing the rank correlation, specifically using Spearman rank correlation, between each year's 25 most popular boys' and girls' names and those of the subsequent three years. This approach allows us to assess whether today's favored names continue to dominate in future years, providing insights into the longevity of naming trends.As such, this investigation aims to confirm or refute the agency's suspicion that since the 1990s, popular name trends have shown reduced persistence compared to earlier decades.
 
-```{r,  warning =  FALSE, fig.align = 'center', fig.cap = "Spearman Correlations Over Time.\\label{Figure1}", fig.ext = 'png', fig.height = 5, fig.width = 8}
+<!-- The following is a code chunk. It must have its own unique name (after the r), or no name. After the comma follows commands for R which are self-explanatory. By default, the code and messages will not be printed in your pdf, just the output: -->
+
+```{r Figure1, echo=FALSE, fig.align='center', fig.cap="Spearman Correlations Over Time.\\label{Figure1}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
 
 # Getting the plot data
 
@@ -141,18 +140,18 @@ plot_data_F <- spearman_corr(baby_names, gender = "F")
 plots <- ts_corr_plotter(plot_data_M, plot_data_F)
 plots
   
-```
-\hfill
 
-<!-- hfill can be used to create a space, like here between text and table. -->
+```
+
+\hfill
 
 As can be seen from the tables above, there is a clear divergence in persistence between boys' and girls' naming trends. Boys' names have exhibited a notable decline in staying power since the 90's when compared to earlier decades. In other words, boys have a faster turnover in naming preferences. In contrast, girls' names have shown greater resilience, consistently maintaining or exceeding their popularity levels from the 1990s. While girls' names experienced fluctuations with occasional peaks, they generally reverted to similar levels over time. When examining both genders collectively, the overall trend reveals a decline in the persistence of popular names across the board. This finding underscores shifting societal influences and perhaps evolving cultural dynamics such as interest in cinematic media.
 
-# Cultural Influences {-}
+# Cultural Influences
 
 We see further in the figures below, showing that the top five most popular names overall have all past their peaks for both males and females and that naming conventions, while sticky, do not persist indefinitely. While their are likely many cultural and sociological factors that impact on this change, media is likely one of them. 
 
-```{r,  warning =  FALSE, fig.align = 'center', fig.cap = "Top 5 Male Names Over Time.\\label{Figure2}", fig.ext = 'png', fig.height = 5, fig.width = 8}
+```{r Figure2, echo=FALSE, fig.align='center', fig.cap="Top 5 Male Names Over Time.\\label{Figure2}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
 
 # Plotting the top 5 persistently popular names per gender throughout the years
 
@@ -161,7 +160,7 @@ top_male_names
 
 ```
 
-```{r,  warning =  FALSE, fig.align = 'center', fig.cap = "Top 5 Female Names Over Time.\\label{Figure3}", fig.ext = 'png', fig.height = 5, fig.width = 8}
+```{r Figure3, echo=FALSE, fig.align='center', fig.cap="Top 5 Male Names Over Time.\\label{Figure3}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
 
 # Plotting the top 5 persistently popular names per gender throughout the years
 
@@ -169,13 +168,12 @@ top_female_names <- name_plotter(baby_names, gender = "F")
 top_female_names
 
 ```
-\hfill
 
-<!-- hfill can be used to create a space, like here between text and table. -->
+\hfill
 
 We examine this by first joining the baby names data set to the actors and titles data set according to actor name and the titles release year. This gives us the count of a particular name in accordance with the name of the actor in the title for that titles release year. Using this data set, a dummy variable was created to indicate whether an actor with one of the top 5 most popular names for males and females was present. Subsequently, this dummy variable, along with a titles popularity and review score, was regressed using on the count of a name in the titles release year using Ordinary Least Squares (POLS) to examine its impact. 
 
-```{r, results = 'asis'}
+```{r echo=FALSE, results=}
 
 actor_names_M <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "M")
 actor_names_M
@@ -184,11 +182,9 @@ actor_names_M
 
 \hfill
 
-<!-- hfill can be used to create a space, like here between text and table. -->
-
 The Breusch-Pagan test results indicate significant heteroscedasticity, suggesting variability in error terms across observations, reinforcing the need for random effects or fixed effects models to account for such variance. Once accounted for, the results for male names highlight significant coefficients across all models, all of which indicate that an actor having one of the top 5 names greatly impacts on name counts for those names. The Hausman test further indicates that the Fixed Effects model is preferable due to its lower P-value, suggesting that unobserved heterogeneity is indeed present and should be accounted for.
 
-```{r, results = 'asis'}
+```{r echo=FALSE, results=}
 
 actor_names_F <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "F")
 actor_names_F
@@ -197,10 +193,7 @@ actor_names_F
 
 \hfill
 
-<!-- hfill can be used to create a space, like here between text and table. -->
-
 We see similar results for female names, however in this case the Hausman test results provide a larger P-value, indicating that endogeneity may be present and that the Random Effects (RE) for controlling unobserved heterogeneity in this analysis. Despite this, we still see a large positive impact on name counts when actress's have one of the top 5 names. Overall, for both male and female names, these findings underscore the substantial impact of actor name popularity naming conventions, providing valuable insights into consumer preferences.
-
 
 # Conclusion
 
@@ -209,3 +202,16 @@ In conclusion, our exploration into baby naming trends in the United States has 
 Moreover, our investigation into the impact of actor names on baby naming conventions has revealed compelling insights. By linking baby names data with actor credits and title information, we observed significant correlations between the presence of top 5 actor names and increased name counts in movie titles. The adoption of Fixed Effects models, supported by the Hausman test, underscores the importance of accounting for unobserved heterogeneity in such analyses, enhancing the validity of our findings.
 
 Overall, these findings underscore the intricate interplay between cultural influences, media representation, and societal preferences in shaping baby naming trends. They provide valuable insights for understanding consumer behavior and cultural dynamics in contemporary society, highlighting the enduring relevance of popular culture in influencing naming practices.
+
+
+
+
+
+
+
+
+
+
+
+
+

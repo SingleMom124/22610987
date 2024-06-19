@@ -4,34 +4,134 @@ output:
     variant: markdown_github
 ---
 
-# Purpose
+## Question 1:
 
-Purpose of this work folder.
+This project explores baby naming trends in the United States, examining data from 1910 to 2014. The analysis focuses on identifying patterns influenced by cultural and societal factors, such as popular media and historical events.
 
-Ideally store a minimum working example data set in data folder.
+Utilizes panel data on baby names, actor credits, and HBO titles.
 
-Add binary files in bin, and closed R functions in code. Human Readable settings files (e.g. csv) should be placed in settings/
+```{r include=FALSE}
 
+rm(list = ls())
+gc() 
 
-```{r eval=FALSE, include=FALSE}
-# Now creating separate folders with Texavier files...
+list.files('Question1/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
 
-Texevier::create_template(directory = "C:/Studies/Masters/2nd_Semester/Data_Science/22610987", template_name = "Question1")
-Texevier::create_template(directory = "C:/Studies/Masters/2nd_Semester/Data_Science/22610987", template_name = "Question2")
-Texevier::create_template(directory = "C:/Studies/Masters/2nd_Semester/Data_Science/22610987", template_name = "Question3")
-Texevier::create_template(directory = "C:/Studies/Masters/2nd_Semester/Data_Science/22610987", template_name = "Question4")
-Texevier::create_template(directory = "C:/Studies/Masters/2nd_Semester/Data_Science/22610987", template_name = "Question5")
+library(tidyverse)
+library(readr)
 
-# I've set this to not run again as the folders are already created. Dont need to include this in the prac.
+baby_names <- read_rds("Question1/data/Baby_Names_By_US_State.rds")
+charts <- read_rds("Question1/data/charts.rds")
+hbo_titles <- read_rds("Question1/data/HBO_titles.rds")
+hbo_credits <- read_rds("Question1/data/HBO_credits.rds")
+
 ```
 
+First I plotted the Spearman correlation between the 25 current most popular baby names, current refering to the your in question, and the 25 most popular names 3 years from then. I do this for boys and girls names seperately and then together:
 
 ```{r}
 
-rm(list = ls()) # Clean your environment:
-gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
-library(tidyverse)
-list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+# Getting the Spearman correlations in the form of plot data using my spearman_plot function...
+
+plot_data_M <- spearman_corr(baby_names, gender = "M")
+plot_data_F <- spearman_corr(baby_names, gender = "F")
+
+# ... and plotting said data using my time series correlation plotter function.
+
+plots <- ts_corr_plotter(plot_data_M, plot_data_F)
+plots
+
+```
+What we see here is a decline in the persistence of naming trends for boys names since the 1990s, while girls' names have demonstrated greater resilience over time. However, overall, we do see a decline in the persistence of naming trends since the 1990s, confirming the agencies suspicion.
+
+Next I look at what other cultural influences may be impacting on these trends, such as actor names. I do this by plotting the the 5 most popular names throughout the entire data set and their trends over time, finding that have all seen a fairly large decline in their prevalence since their peaks. The most popular boys names seems to have moved together while the most popular girls names seemed to see more independent bouts of popularity. 
+
+```{r}
+
+# Plotting the top 5 persistently popular names per gender throughout the years
+
+top_male_names <- name_plotter(baby_names, gender = "M")
+top_male_names
+
+top_female_names <- name_plotter(baby_names, gender = "F")
+top_female_names
+
+```
+Using these names in conjunction with the hbo data and the baby names data, I created a dummy for whether an actor with a popular name appeared in a title and what that names count would be for that year. This was done for all actor names, not just the popular ones. I then ran regressions on a names count.
+
+```{r}
+
+# Using the 'plm' package to run regressions on the panel data, whaich I employ using my names_reg function
+
+actor_names_M <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "M")
+actor_names_M
+
+actor_names_F <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "F")
+actor_names_F
+
 ```
 
+From this I find that media such as movies and television, significantly impact naming conventions. Analysis reveals correlations between popular actor names and increased occurrences of those names in baby naming trends.
+
+## Question 2:
+
+This project explores the musical evolution of Coldplay and Metallica through detailed analysis of their discographies using data from Spotify and Billboard. The analysis focuses on their studio recordings to maintain consistency and relevance in comparisons.
+
+Data Sources: Utilizes Spotify data for musical attributes and Billboard Top 100 charts data to contextualize trends.
+
+```{r include=FALSE}
+rm(list = ls()) 
+gc() 
+
+list.files('Question2/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+library(readr)
+library(tidyverse)
+
+coldplay <- read_csv("Question2/data/Coldplay.csv")
+metallica <- read_csv("Question2/data/metallica.csv")
+spotify <- read_rds("Question2/data/Broader_Spotify_Info.rds")
+billboard_100 <- read_rds("Question2/data/charts.rds")
+
+```
+
+As shown in the plots below, Coldplay shows consistent popularity levels across their albums, while Metallica's popularity varies significantly, with notable peaks for specific albums like the self-titled "Metallica".
+
+```{r}
+# Using functions to filter out all non-studio songs...
+
+coldplay_studio <- studio_filter(coldplay)
+metallica_studio <- studio_filter(metallica)
+
+c_plot <- box_plotter(coldplay_studio, "popularity", title = "Popularity by album (Coldplay)")
+m_plot <- box_plotter(metallica_studio, "popularity", title = "Popularity by album (Metallica)")
+c_plot
+m_plot
+```
+
+Comparison with Mainstream Trends: The study compares Coldplay and Metallica's musical attributes with trends observed in the Billboard Top 100 charts, revealing alignments and divergences in their evolution compared to broader music industry trends.
+
+```{r}
+# First wrangling the Spotify and billboard data a little bit and joining them...
+
+billboard_100 <- billboard_100 %>% 
+    rename(name = song)
+
+mainstream_music <- inner_join(spotify, billboard_100, by = c("name", "artist"))
+mainstream_music <- mainstream_music %>% 
+    rename(release_date = date)
+
+# .. then feeding it to my attributes plotting function
+
+attributes <- band_attributes(metallica_studio, coldplay_studio, mainstream_music, band_name1 = "Metallica", band_name2 = "Coldplay", band_name3 = "Billboard100")
+print(attributes)
+```
+Visualization: Heatmaps and box plots visualize changes in musical attributes and popularity across albums for both bands.
+
+```{r}
+m_heatmap <- heat_mapper(metallica_studio, title = "Heatmap for Metallica Songs")
+m_heatmap
+c_heatmap <- heat_mapper(coldplay_studio, title = "Heatmap for Coldplay Songs")
+c_heatmap
+```
 
