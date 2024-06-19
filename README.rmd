@@ -159,5 +159,95 @@ Heat map for Coldplay shows that energy and loudness, and acousticness and valen
 
 ## Question 3:
 
+Project focuses on international aid efforts amidst the Russia-Ukraine conflict, specifically analyzing which countries are actively contributing to Ukraine's defense and humanitarian needs. Highlighting both leading contributors and areas of criticism, the segment aims to provide viewers with insights into global responses and their implications for the ongoing conflict.
 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+rm(list = ls()) 
+gc()
+
+library(tidyverse)
+library(readr)
+
+list.files('Question3/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+alloc <- read_csv("Question3/data/Financial Allocations.csv")
+commit <- read_csv("Question3/data/Financial Commitments.csv")
+
+```
+
+# Data Visualisation:
+
+Calculating the total allocations per EU member is a proportion of GDP so that relative comparisons can be made.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# Just a small bit of wrangling...
+
+# ... by joining the data sets by "country" and "EU member" columns so that I only have to work with one data set...
+
+data <- inner_join(alloc, commit, by = c("Country", "EU member"))
+
+# ... and then filtering out countries who are not EU Members
+
+data <- data %>% 
+    filter(`EU member` == 1) %>%
+    mutate(Allocations_GDP_Percent = (`Total bilateral allocations($ billion)` / `GDP in 2021($ billion)`) * 100) %>% 
+    mutate(Commitments_GDP_Percent = (`Total bilateral commitments($ billion)` / `GDP in 2021($ billion)`) * 100)
+
+plot <- ggplot(data, aes(x = Country, 
+                         y = Allocations_GDP_Percent)) +
+        geom_bar(stat = "identity", 
+                 fill = "navy") +
+        labs(title = "Total Allocations as a Proportion of GDP",
+             x = "Country",
+             y = "Percentage of GDP") +
+        theme_minimal() +
+        theme(axis.text.x = element_text(size = 7, angle = 45, hjust = 1)) +
+        theme(panel.border = element_rect(color = "black", fill = NA, size = 1))
+plot
+
+```
+
+The plot reveals massive outliers such as Estonia with an allocation of more than 75% of its GDP and Malta's more than 30%. This seems unlikely. Probably measurement error so they need to be removed.
+
+Plotting this filtered data as a double bar graph that compares a EU members allocation to what it committed to allocate.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# Filtering out Estonia and Malta...
+
+data <- data %>%
+    filter(!Country %in% c("Estonia", "Malta"))
+
+# Now plotting it using my double_bar_plotter function...
+
+compare_plot <- double_bar_plotter(data)
+compare_plot
+
+```
+
+Also using the filtered data to plot how many EU members allocated as much they committed versus how many fell short...
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# Plot this using my "allocation_proportions" function
+
+proportions <- allocation_proportions(data)
+proportions
+
+```
+
+... as well as which countries have the highest relative allocations.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+# Plot this using my "allocation_head" function...
+
+allocation_head <- allocation_head(data)
+allocation_head
+
+```
+
+Some main points to gather from this are that even though most EU members allocated at least as much aid to Ukraine as what they committed, 48% failed to meet their commitment. Additionally, it seems as though countries closer to the conflict have the highest allocations, these including mostly slavic nations and former USSR occupants.
 

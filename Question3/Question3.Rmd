@@ -54,6 +54,7 @@ plot <- ggplot(data, aes(x = Country,
         theme(panel.border = element_rect(color = "black", fill = NA, size = 1))
 plot
 ```
+
 With those two countries filtered out, plots of each EU members allocation versus their contribution are made.
 
 ```{r Figure2, echo=FALSE, fig.align='center', fig.cap="Allocation vs. Commitment.\\label{Figure2}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
@@ -68,6 +69,7 @@ compare_plot <- double_bar_plotter(data)
 compare_plot
 
 ```
+
 From this we see that just over half of all EU members have allocated as much or more aid to Ukraine than what that committed. 
 
 ```{r Figure3, echo=FALSE, fig.align='center', fig.cap="Proportion who allocate as much as they commit.\\label{Figure3}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
@@ -78,6 +80,7 @@ proportions <- allocation_proportions(data)
 proportions
 
 ```
+
 We also see the which countries have the highest relative allocations.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -94,4 +97,4 @@ allocation_head
 
 - Countries closer to the conflict have the highest allocations, these including mostly slavic nations and former USSR occupants.
 
-- It is possible that those further from the conflict are naturally more detached from the reality of what is goin on in Ukraine. 
+- It is possible that those further from the conflict are naturally more detached from the reality of what is going on in Ukraine. 
