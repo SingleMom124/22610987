@@ -83,10 +83,10 @@ Data Sources: Utilizes Spotify data for musical attributes and Billboard Top 100
 rm(list = ls()) 
 gc() 
 
-list.files('Question2/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
-
 library(readr)
 library(tidyverse)
+
+list.files('Question2/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
 
 coldplay <- read_csv("Question2/data/Coldplay.csv")
 metallica <- read_csv("Question2/data/metallica.csv")
