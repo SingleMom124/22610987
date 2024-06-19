@@ -127,7 +127,7 @@ The dataset provided for the analysis of Coldplay and Metallica's musical progre
 
 <!-- The following is a code chunk. It must have its own unique name (after the r), or no name. After the comma follows commands for R which are self-explanatory. By default, the code and messages will not be printed in your pdf, just the output: -->
 
-As can be seen from the plots below, while Metallica has reached greater a level of popularity for one of their albums, the self titled "Metallica", this popularity is inconsistent with other albums falling far below this level. Coldplay see's much more consistent levels of popularity across its album releases. Metallica Has also released more albums than Coldplay.
+The two box plots below represent the popularity of each album for both Metallica and Coldplay. The popularity scores for Metallica's albums vary widely. Their earlier albums such as "Master of Puppets," "Ride the Lightning," and "Kill 'Em All" show higher popularity scores with less variability. However, newer albums like "Hardwired to Self-Destruct" show lower popularity scores suggest a greater popularity in the 80s which then see's a decline into the 2000's, though some recent works still maintain considerable popularity. On the other hand, Coldplay shows a different trend with a more consistent popularity score across albums. Albums like "A Rush of Blood to the Head" and "Viva La Vida or Death and All His Friends" have higher popularity scores but over all there is less variability, suggesting a steadier fanbase.
 
 ```{r Figure1, echo=FALSE, fig.align='center', fig.cap="Coldplay Album Popularity \\label{Figure1}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
 
@@ -155,7 +155,7 @@ m_plot <- box_plotter(metallica_studio, "popularity", title = "Popularity by alb
 m_plot
 ```
 
-To contextualize the musical evolution of Coldplay and Metallica within broader music industry trends, I utilized supplementary data sources, including the Billboard Top 100 charts spanning several decades. This analysis involved comparing the attributes of Coldplay and Metallica's tracks—such as tempo, energy, valence, danceability, and popularity—with trends observed in mainstream music over the years. By examining changes in these musical attributes and their alignment with or divergence from the broader trends in the Billboard Top 100, I identified correlations and contrasts in stylistic changes. This comparative approach allowed for a deeper understanding of how Coldplay and Metallica's musical progression aligns with or stands apart from the prevailing trends in popular music, shedding light on their unique contributions to the industry and their ability to adapt to or influence broader musical movements.
+To contextualize the musical evolution of Coldplay and Metallica within broader music industry trends, I utilized supplementary data sources, including the Billboard Top 100 charts spanning several decades. This analysis involved comparing the attributes of Coldplay and Metallica's tracks—such as tempo, energy, valence, danceability, and popularity with trends observed in mainstream music over the years all of which is represented in the line graphs below. This comparative approach allowed for a deeper understanding of how Coldplay and Metallica's musical progression aligns with or stands apart from the prevailing trends in popular music, shedding light on their unique contributions to the industry and their ability to adapt to or influence broader musical movements.
 
 ```{r Figure3, echo=FALSE, fig.align='center', fig.cap="Evolution of Music over time \\label{Figure3}", fig.height=5, fig.width=6, warning=FALSE, fig.ext='png'}
 
@@ -174,7 +174,17 @@ attributes <- band_attributes(metallica_studio, coldplay_studio, mainstream_musi
 print(attributes)
 ```
 
-Plotting heatmaps...
+Metallica shows fluctuating but overall high energy levels throughout their career. Coldplay started of their careers making more melow music but shows a rising trend in energy over the years, indicating a shift towards more energetic music in their later works.
+
+Valence for both bands shows interesting trends. Metallica generally has a lower valence compared to Coldplay, likely due to the subject matter of some of their songs. Coldplay's valence has varied but shows a slight upward trend, indicating more positive or emotionally uplifting music in recent years.
+
+Metallica maintains a lower danceability score throughout their career but given that they primarily produce thrash metal this is consistent with their genre and style. Coldplay's danceability shows an increasing trend, aindicating a move towards more pop and rhythm-oriented music in recent albums.
+
+Both bands exhibit changes in song duration over the years. Metallica’s song durations have seen more fluctuation but they generally tend to be much longer than that of Coldplay. However, Coldplay's songs have seen an increase in duration over time, possibly refelcting more complex song structures or varied musical explorations.
+
+Compared to the Billboard 100, Metallica's music stands out with higher energy and lower valence, emphasizing their thrash metal identity while Coldplay’s musical progression aligns more closely with mainstream trends, showing increasing energy and danceability, possibly explaining their more consistent levels popularity.
+
+The heat maps below provide further insights into how different each bands musical elements relate to each other within their discography. This analysis contextualizes the distinctive musical characteristics and evolution of Metallica and Coldplay over time, highlighting their genre-specific traits and potential shifts in musical style and approach across their careers.
 
 ```{r Figure4, echo=FALSE, fig.align='center', fig.cap="Heatmap of Metallicas musical attributes\\label{Figure4}", fig.height=3, fig.width=5, warning=FALSE, fig.ext='png'}
 
@@ -183,6 +193,8 @@ m_heatmap
 
 ```
 
+For Metallica, we see that loudness and energy are highly positively correlated, as are acousticness and liveness. On the other hand, danceability and acousticness, danceability and loudness, and instrumentalness and valence have notable negative correlations.This suggests that Metallica's loud and energetic music tends to be less danceable and less acoustic.
+
 ```{r Figure5, echo=FALSE, fig.align='center', fig.cap="Heatmap of Coldplays musical attributes\\label{Figure5}", fig.height=3, fig.width=5, warning=FALSE, fig.ext='png'}
 
 c_heatmap <- heat_mapper(coldplay_studio, title = "Heatmap for Coldplay Songs")
@@ -190,80 +202,8 @@ c_heatmap
 
 ```
 
+For Coldplay, energy and loudness, and acousticness and valence all see positive correlations while danceability and acousticness, and liveness and acousticness see negative correlations. This indicates that Coldplay's more energetic and loud songs tend to be less acoustic, and there is a distinct separation between acoustic and danceable tracks.
 
- 
 # Conclusion
 
-
-
-
-Graph Analysis
-1. Popularity by Album
-The two boxplots represent the popularity of each album for both Metallica and Coldplay.
-
-Metallica:
-
-The popularity scores for Metallica's albums vary widely.
-Their earlier albums such as "Master of Puppets," "Ride the Lightning," and "Kill 'Em All" show higher popularity scores with less variability.
-Some newer albums like "Hardwired… to Self-Destruct" show lower popularity scores.
-This suggests a strong start with a decline in popularity for later albums, though some recent works still maintain considerable popularity.
-Coldplay:
-
-Coldplay shows a different trend with a more consistent popularity score across albums.
-Albums like "A Rush of Blood to the Head" and "Viva La Vida or Death and All His Friends" have higher popularity scores.
-There is less variability in the popularity scores for Coldplay’s albums, suggesting a steadier fanbase.
-2. Musical Progression
-The line graphs depict the progression of various musical attributes (energy, valence, danceability, and duration) over time for Metallica and Coldplay, compared to the Billboard 100 trends.
-
-Energy:
-
-Metallica shows high energy levels throughout their career, with fluctuations but generally maintaining a high energy profile.
-Coldplay shows a rising trend in energy over the years, indicating a shift towards more energetic music in their later works.
-Valence:
-
-Valence (musical positivity) for both bands shows interesting trends. Metallica generally has a lower valence compared to Coldplay.
-Coldplay's valence has varied but shows a slight upward trend, indicating more positive or emotionally uplifting music in recent years.
-Danceability:
-
-Metallica maintains a lower danceability score, consistent with their genre and style.
-Coldplay's danceability shows an increasing trend, aligning with their move towards more pop and rhythm-oriented music in recent albums.
-Duration:
-
-Both bands exhibit changes in song duration over the years. Metallica’s song durations have seen more fluctuation.
-Coldplay's songs have become longer over time, which might correlate with more complex song structures or varied musical explorations.
-3. Heatmap of Musical Attributes
-The heatmaps show the correlation between different musical attributes for Metallica and Coldplay songs.
-
-Metallica:
-
-Positive correlations: Loudness and energy are highly correlated, as are acousticness and liveness.
-Negative correlations: Danceability and acousticness, danceability and loudness, and instrumentalness and valence have notable negative correlations.
-This suggests that Metallica's loud and energetic music tends to be less danceable and less acoustic.
-Coldplay:
-
-Positive correlations: Energy and loudness, acousticness and valence.
-Negative correlations: Danceability and acousticness, liveness and acousticness.
-This indicates that Coldplay's more energetic and loud songs tend to be less acoustic, and there is a distinct separation between acoustic and danceable tracks.
-Report Summary
-Longevity and Popularity:
-
-Metallica’s popularity has seen significant highs and lows, with early albums being more popular. Coldplay has maintained a more consistent popularity across their discography.
-Musical Evolution:
-
-Metallica has maintained a high-energy profile, true to their heavy metal roots, but with decreasing valence and danceability in line with their genre.
-Coldplay has evolved from a softer, alternative rock sound to incorporating more energetic and danceable elements in recent years, reflecting a trend towards mainstream pop.
-Comparative Trends:
-
-Compared to the Billboard 100, Metallica's music stands out with higher energy and lower valence, emphasizing their heavy metal identity.
-Coldplay’s musical progression aligns more closely with mainstream trends, showing increasing energy and danceability, which might explain their consistent popularity.
-Conclusion:
-
-Metallica and Coldplay have both demonstrated impressive longevity but have taken very different musical journeys. Metallica's steadfast adherence to their heavy metal roots contrasts with Coldplay's adaptive style, which has embraced more modern and mainstream trends. This comparative analysis highlights the diverse ways in which bands can evolve and sustain their relevance in the music industry over decades.
-
-
-
-
-
-
-
-
+In comparing Metallica and Coldplay, their contrasting musical journeys highlight diverse paths to longevity and relevance in the music industry. Metallica has remained steadfast in their heavy metal roots, maintaining a high-energy profile while adapting their sound within the constraints of their genre. Over their career, they've shown fluctuations in popularity, with early albums experiencing peaks. In contrast, Coldplay has demonstrated a more adaptive style, evolving from softer alternative rock to incorporating energetic and danceable elements, aligning with broader pop trends. Their consistent popularity across their discography underscores their ability to evolve while maintaining widespread appeal. Together, these bands exemplify how artistic evolution and genre adaptation can sustain enduring success in contemporary music.

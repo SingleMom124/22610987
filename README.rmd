@@ -10,15 +10,15 @@ This project explores baby naming trends in the United States, examining data fr
 
 Utilizes panel data on baby names, actor credits, and HBO titles.
 
-```{r include=FALSE}
+```{r message=FALSE, warning=FALSE, include=FALSE}
 
 rm(list = ls())
 gc() 
 
-list.files('Question1/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
-
 library(tidyverse)
 library(readr)
+
+list.files('Question1/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
 
 baby_names <- read_rds("Question1/data/Baby_Names_By_US_State.rds")
 charts <- read_rds("Question1/data/charts.rds")
@@ -42,6 +42,7 @@ plots <- ts_corr_plotter(plot_data_M, plot_data_F)
 plots
 
 ```
+
 What we see here is a decline in the persistence of naming trends for boys names since the 1990s, while girls' names have demonstrated greater resilience over time. However, overall, we do see a decline in the persistence of naming trends since the 1990s, confirming the agencies suspicion.
 
 Next I look at what other cultural influences may be impacting on these trends, such as actor names. I do this by plotting the the 5 most popular names throughout the entire data set and their trends over time, finding that have all seen a fairly large decline in their prevalence since their peaks. The most popular boys names seems to have moved together while the most popular girls names seemed to see more independent bouts of popularity. 
@@ -57,21 +58,30 @@ top_female_names <- name_plotter(baby_names, gender = "F")
 top_female_names
 
 ```
+
 Using these names in conjunction with the hbo data and the baby names data, I created a dummy for whether an actor with a popular name appeared in a title and what that names count would be for that year. This was done for all actor names, not just the popular ones. I then ran regressions on a names count.
 
-```{r}
+Here I include the Breusch-Pagan and Hausman tests as I could not get them to knit In the pdf.
 
-# Using the 'plm' package to run regressions on the panel data, whaich I employ using my names_reg function
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 
-actor_names_M <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "M")
+# Using the 'plm' package to run regressions on the panel data, which I employ using my names_reg function
+
+actor_names_M <- names_reg_test(baby_names, hbo_credits, hbo_titles, gender = "M")
 actor_names_M
 
-actor_names_F <- names_reg(baby_names, hbo_credits, hbo_titles, gender = "F")
+actor_names_F <- names_reg_test(baby_names, hbo_credits, hbo_titles, gender = "F")
 actor_names_F
 
 ```
 
-From this I find that media such as movies and television, significantly impact naming conventions. Analysis reveals correlations between popular actor names and increased occurrences of those names in baby naming trends.
+For both male and female names the Breusch-Pagan tests suggest that pooled OLS is insufficient. Where they differ is the model type. 
+
+For the male names the Hausman test has a small p-value, indicating that the fixed effects (FE) model better represents the effect of an actor with a popular name being in a title on name counts for that year. 
+
+For the female names the Hausman test has a larger p-value, indicating that the random effects (RE) model better represents the effect of an actor with a popular name being in a title on name counts for that year. 
+
+However both suggest that media such as movies and television, significantly impact naming conventions. Analysis reveals correlations between popular actor names and increased occurrences of those names in baby naming trends.
 
 ## Question 2:
 
@@ -95,7 +105,7 @@ billboard_100 <- read_rds("Question2/data/charts.rds")
 
 ```
 
-As shown in the plots below, Coldplay shows consistent popularity levels across their albums, while Metallica's popularity varies significantly, with notable peaks for specific albums like the self-titled "Metallica".
+# Data Visualization:
 
 ```{r}
 # Using functions to filter out all non-studio songs...
@@ -108,8 +118,7 @@ m_plot <- box_plotter(metallica_studio, "popularity", title = "Popularity by alb
 c_plot
 m_plot
 ```
-
-Comparison with Mainstream Trends: The study compares Coldplay and Metallica's musical attributes with trends observed in the Billboard Top 100 charts, revealing alignments and divergences in their evolution compared to broader music industry trends.
+Box and whisker plots show that Coldplay has more consistent popularity levels across their albums, while Metallica's popularity varies significantly, with notable peaks for cetain albums.
 
 ```{r}
 # First wrangling the Spotify and billboard data a little bit and joining them...
@@ -126,7 +135,16 @@ mainstream_music <- mainstream_music %>%
 attributes <- band_attributes(metallica_studio, coldplay_studio, mainstream_music, band_name1 = "Metallica", band_name2 = "Coldplay", band_name3 = "Billboard100")
 print(attributes)
 ```
-Visualization: Heatmaps and box plots visualize changes in musical attributes and popularity across albums for both bands.
+
+Metallica shows fluctuating but overall high energy levels throughout their career. Coldplay started of their careers making more melow music but shows a rising trend in energy over the years, indicating a shift towards more energetic music in their later works.
+
+Valence for both bands shows interesting trends. Metallica generally has a lower valence compared to Coldplay, likely due to the subject matter of some of their songs. Coldplay's valence has varied but shows a slight upward trend, indicating more positive or emotionally uplifting music in recent years.
+
+Metallica maintains a lower danceability score throughout their career but given that they primarily produce thrash metal this is consistent with their genre and style. Coldplay's danceability shows an increasing trend, aindicating a move towards more pop and rhythm-oriented music in recent albums.
+
+Both bands exhibit changes in song duration over the years. Metallica’s song durations have seen more fluctuation but they generally tend to be much longer than that of Coldplay. However, Coldplay's songs have seen an increase in duration over time, possibly refelcting more complex song structures or varied musical explorations.
+
+Compared to the Billboard 100, Metallica's music stands out with higher energy and lower valence, emphasizing their thrash metal identity while Coldplay’s musical progression aligns more closely with mainstream trends, showing increasing energy and danceability, possibly explaining their more consistent levels popularity.
 
 ```{r}
 m_heatmap <- heat_mapper(metallica_studio, title = "Heatmap for Metallica Songs")
@@ -134,4 +152,12 @@ m_heatmap
 c_heatmap <- heat_mapper(coldplay_studio, title = "Heatmap for Coldplay Songs")
 c_heatmap
 ```
+
+Heat map for Metallica shows that loudness and energy are highly positively correlated, as are acousticness and liveness. On the other hand, danceability and acousticness, danceability and loudness, and instrumentalness and valence have notable negative correlations.This suggests that Metallica's loud and energetic music tends to be less danceable and less acoustic.
+
+Heat map for Coldplay shows that energy and loudness, and acousticness and valence all see positive correlations while danceability and acousticness, and liveness and acousticness see negative correlations. This indicates that Coldplay's more energetic and loud songs tend to be less acoustic, and there is a distinct separation between acoustic and danceable tracks.
+
+## Question 3:
+
+
 
