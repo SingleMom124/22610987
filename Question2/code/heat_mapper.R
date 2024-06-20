@@ -1,5 +1,8 @@
 heat_mapper <- function(data, title){
 
+    suppressWarnings({
+        suppressMessages({
+
     library(tidyverse)
     library(ggplot2)
 
@@ -34,6 +37,9 @@ heat_mapper <- function(data, title){
               panel.border = element_rect(color = "black",
                                           fill = NA,
                                           size = 1))
+
+        })
+    })
 
     return(plot)
 

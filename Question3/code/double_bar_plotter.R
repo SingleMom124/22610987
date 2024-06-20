@@ -1,5 +1,8 @@
 double_bar_plotter <- function(data){
 
+    suppressWarnings({
+        suppressMessages({
+
     library(tidyverse)
     library(ggplot2)
 
@@ -31,6 +34,9 @@ double_bar_plotter <- function(data){
               legend.position = "top",
               legend.title = element_blank(),
               panel.border = element_rect(color = "black", fill = NA, size = 1))
+
+        })
+    })
 
     return(plot)
 

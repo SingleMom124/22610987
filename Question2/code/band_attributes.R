@@ -2,6 +2,9 @@
 
 band_attributes <- function(data1, data2, data3, band_name1, band_name2, band_name3) {
 
+    suppressWarnings({
+        suppressMessages({
+
     library(ggplot2)
     library(ggpubr)
     library(tidyverse)
@@ -84,6 +87,9 @@ band_attributes <- function(data1, data2, data3, band_name1, band_name2, band_na
     combined_plot <- annotate_figure(combined_plot,
                                       top = text_grob("Musical Progression of Metallica and Coldplay",
                                                       face = "bold", size = 10))
+
+        })
+    })
 
     return(combined_plot)
 

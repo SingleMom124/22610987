@@ -1,5 +1,8 @@
 names_reg <- function(data, credits, movies, gender) {
 
+    suppressWarnings({
+        suppressMessages({
+
     library(dplyr)
     library(plm)
     library(huxtable)
@@ -54,8 +57,9 @@ names_reg <- function(data, credits, movies, gender) {
                   index = c("id"),
                   model = "within")
 
-    suppressWarnings({
     regs <- huxreg(POLS = model1, RE = model2, FE = model3)
+
+        })
     })
 
     return(regs)

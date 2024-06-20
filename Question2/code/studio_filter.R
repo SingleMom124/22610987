@@ -1,5 +1,8 @@
 studio_filter <- function(data){
 
+    suppressWarnings({
+        suppressMessages({
+
     library(tidyverse)
 
     # In when the Cold play data is inputed, some columns need to be adapted to match Metallica such as the duration column being in a different metric...
@@ -37,6 +40,9 @@ studio_filter <- function(data){
     band_studio <- data %>%
         filter(!album %in% band_alt_album$alts) %>%
         filter(!name %in% band_alt_song$alts)
+
+        })
+    })
 
     return(band_studio)
 

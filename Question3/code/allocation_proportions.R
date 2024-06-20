@@ -1,5 +1,8 @@
 allocation_proportions <- function(data){
 
+    suppressWarnings({
+        suppressMessages({
+
     library(tidyverse)
     library(ggplot2)
 
@@ -26,6 +29,9 @@ allocation_proportions <- function(data){
                   size = 3,
                   color = "black")+
         theme(panel.border = element_rect(color = "black", fill = NA, size = 1))
+
+        })
+    })
 
     return(plot)
 

@@ -1,6 +1,6 @@
 ---
 title: "Country Aid to Ukraine Summary"
-author: "Josh"
+author: "Joshus-Connor Knapp"
 date: "2024-06-19"
 output: pdf_document
 ---
@@ -37,51 +37,41 @@ data <- data %>%
 
 ```
 
-# Data Visualisation
+# Summary:
 
-Looking at the scale effect of each countries commitments and allocations as a proportion of their total GDP. It is important to note here that Estonia's allocation was more than 75% of its GDP and Malta's more than 30%. This seems unlikely and is verifiably false. For example, a quick Google shows that Estonia's allocations as of 2024 amount to 1.4% of its GDP. This is likely due to measurement error and so these two countries have been removed from the data.
+* As can be seen in Figure \ref{Figure2} below, while most EU members are allocating at least as much aid to Ukraine as what they committed, 48% still fail to meet
+their commitment. 
 
-```{r Figure1, echo=FALSE, fig.align='center', fig.cap="Allocations as a proportion of GDP. \\label{Figure1}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
-plot <- ggplot(data, aes(x = Country, 
-                         y = Allocations_GDP_Percent)) +
-        geom_bar(stat = "identity", 
-                 fill = "navy") +
-        labs(title = "Total Allocations as a Proportion of GDP",
-             x = "Country",
-             y = "Percentage of GDP") +
-        theme_minimal() +
-        theme(axis.text.x = element_text(size = 7, angle = 45, hjust = 1)) +
-        theme(panel.border = element_rect(color = "black", fill = NA, size = 1))
-plot
-```
+* Countries closer to the conflict have the highest allocations, these including mostly Slavic nations and former USSR occupants.
 
-With those two countries filtered out, plots of each EU members allocation versus their contribution are made.
+* It is possible that those further from the conflict are naturally more detached from the reality of what is going on in Ukraine. 
+
+## Data Visualisation:
 
 ```{r Figure2, echo=FALSE, fig.align='center', fig.cap="Allocation vs. Commitment.\\label{Figure2}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
+
 # Filtering out Estonia and Malta...
 
 data <- data %>%
     filter(!Country %in% c("Estonia", "Malta"))
 
-# Now plotting it using my double_bar_plotter function...
+# ... and plotting the filtered data using my double_bar_plotter function...
 
 compare_plot <- double_bar_plotter(data)
 compare_plot
 
 ```
 
-From this we see that just over half of all EU members have allocated as much or more aid to Ukraine than what that committed. 
 
 ```{r Figure3, echo=FALSE, fig.align='center', fig.cap="Proportion who allocate as much as they commit.\\label{Figure3}", fig.ext='png', fig.height=4, fig.width=6, warning=FALSE}
 
-# Seeing how many EU members allocated as much or more than they commited versus how many fell short...
+# Seeing how many EU members allocated as much or more than they committed versus how many fell short...
 
 proportions <- allocation_proportions(data)
 proportions
 
 ```
 
-We also see the which countries have the highest relative allocations.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -91,10 +81,3 @@ allocation_head <- allocation_head(data)
 allocation_head
 
 ```
-# Summary:
-
-- While most EU members are allocating at least as much aid to Ukraine as what they committed, 48% still fail to meet their commitment. 
-
-- Countries closer to the conflict have the highest allocations, these including mostly slavic nations and former USSR occupants.
-
-- It is possible that those further from the conflict are naturally more detached from the reality of what is going on in Ukraine. 

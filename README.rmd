@@ -4,7 +4,7 @@ output:
     variant: markdown_github
 ---
 
-## Question 1:
+# Question 1:
 
 This project explores baby naming trends in the United States, examining data from 1910 to 2014. The analysis focuses on identifying patterns influenced by cultural and societal factors, such as popular media and historical events.
 
@@ -27,7 +27,7 @@ hbo_credits <- read_rds("Question1/data/HBO_credits.rds")
 
 ```
 
-First I plotted the Spearman correlation between the 25 current most popular baby names, current refering to the your in question, and the 25 most popular names 3 years from then. I do this for boys and girls names seperately and then together:
+First I plotted the Spearman correlation between the 25 current most popular baby names, current referring to the your in question, and the 25 most popular names 3 years from then. I do this for boys and girls names separately and then together:
 
 ```{r}
 
@@ -83,7 +83,7 @@ For the female names the Hausman test has a larger p-value, indicating that the 
 
 However both suggest that media such as movies and television, significantly impact naming conventions. Analysis reveals correlations between popular actor names and increased occurrences of those names in baby naming trends.
 
-## Question 2:
+# Question 2:
 
 This project explores the musical evolution of Coldplay and Metallica through detailed analysis of their discographies using data from Spotify and Billboard. The analysis focuses on their studio recordings to maintain consistency and relevance in comparisons.
 
@@ -105,7 +105,7 @@ billboard_100 <- read_rds("Question2/data/charts.rds")
 
 ```
 
-# Data Visualization:
+## Data Visualization:
 
 ```{r}
 # Using functions to filter out all non-studio songs...
@@ -118,7 +118,8 @@ m_plot <- box_plotter(metallica_studio, "popularity", title = "Popularity by alb
 c_plot
 m_plot
 ```
-Box and whisker plots show that Coldplay has more consistent popularity levels across their albums, while Metallica's popularity varies significantly, with notable peaks for cetain albums.
+
+Box and whisker plots show that Coldplay has more consistent popularity levels across their albums, while Metallica's popularity varies significantly, with notable peaks for certain albums.
 
 ```{r}
 # First wrangling the Spotify and billboard data a little bit and joining them...
@@ -157,7 +158,7 @@ Heat map for Metallica shows that loudness and energy are highly positively corr
 
 Heat map for Coldplay shows that energy and loudness, and acousticness and valence all see positive correlations while danceability and acousticness, and liveness and acousticness see negative correlations. This indicates that Coldplay's more energetic and loud songs tend to be less acoustic, and there is a distinct separation between acoustic and danceable tracks.
 
-## Question 3:
+# Question 3:
 
 Project focuses on international aid efforts amidst the Russia-Ukraine conflict, specifically analyzing which countries are actively contributing to Ukraine's defense and humanitarian needs. Highlighting both leading contributors and areas of criticism, the segment aims to provide viewers with insights into global responses and their implications for the ongoing conflict.
 
@@ -176,9 +177,9 @@ commit <- read_csv("Question3/data/Financial Commitments.csv")
 
 ```
 
-# Data Visualisation:
+## Data Visualisation:
 
-Calculating the total allocations per EU member is a proportion of GDP so that relative comparisons can be made.
+Looking at the scale effect of each countries commitments and allocations as a proportion of their total GDP. It is important to note here that Estonia's allocation was more than 75% of its GDP and Malta's more than 30%. This seems unlikely and is verifiably false. For example, a quick Google shows that Estonia's allocations as of 2024 amount to 1.4% of its GDP. This is likely due to measurement error and so these two countries have been removed from the data.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -220,7 +221,7 @@ Plotting this filtered data as a double bar graph that compares a EU members all
 data <- data %>%
     filter(!Country %in% c("Estonia", "Malta"))
 
-# Now plotting it using my double_bar_plotter function...
+# Now plotting it using my "double_bar_plotter" function...
 
 compare_plot <- double_bar_plotter(data)
 compare_plot
@@ -250,4 +251,103 @@ allocation_head
 ```
 
 Some main points to gather from this are that even though most EU members allocated at least as much aid to Ukraine as what they committed, 48% failed to meet their commitment. Additionally, it seems as though countries closer to the conflict have the highest allocations, these including mostly slavic nations and former USSR occupants.
+
+# Question 4:
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+rm(list = ls()) 
+gc()
+
+library(tidyverse)
+library(readr)
+
+list.files('Question4/code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+
+Winter <- read_rds("Question4/data/winter.rds")
+Summer <- read_rds("Question4/data/summer.rds")
+colnames(Summer)[6] <- "Code"
+colnames(Winter)[6] <- "Code"
+GDP <- read_rds("Question4/data/GDP.rds")
+
+```
+
+Looking at how India cumulatively fared in past Olympic events and comparing this to Brazil, Pakistan, and South Africa during years in which they all competed. These countries were chosen as Pakistan is of similar economic standing and Brazil and South Africa are both emerging market economies, one from South America and one from Africa, providing a fair and diverse comparison.India falls short of all of them with regard to bronze, silver, and gold medals, except Pakistan.
+
+```{r}
+# Joining the summer Olympic and GDP data by country code
+
+summer_gdp <- left_join(Summer, GDP, by = "Code")
+
+# Using my "medal counter function"team_adjuster" function
+
+summer_medals <- team_adjuster(summer_gdp)
+
+# Now plotting this data using my "country_comparison" function, comparing India to similar and emerging economies...
+
+india_compare <- country_comparison_bar(summer_medals, GDP, "India")
+india_compare
+```
+
+The plot below shows the three most consistently dominant countries, in both the summer and the winter Olympics are France, the United Kingdom, and the United States, all of which see medal counts higher than average across the board
+
+```{r}
+# A small bit of wrangling, bindin the summer and winter Olympics sets together and join GDP to this new data set by the "Code" column
+
+olympics <- rbind(Summer, Winter)
+olympics_gdp <- left_join(olympics, GDP, by = "Code")
+
+# Using the my "team_adjuster" function to account for duplicate medals...
+
+team_adjusted <- team_adjuster(olympics_gdp)
+
+# ... and inseting the output in to my "high_performance" function
+
+dominant_countries <- high_performance(team_adjusted)
+dominant_countries
+```
+
+Countries who manage to punch above their weight include Finland, France, Hungary, and Italy. We define this as a countries ability to win more medals than the average fairly consistently as well as by the number of athletes they have competing in a given year.
+
+```{r}
+
+# Plotted using my "above_weight" function
+
+no_odds <- above_weight(summer_gdp, summer_medals)
+no_odds
+```
+Now plotting which countries have the most medals per athlete. The United States takes the cake by far here.
+
+```{r}
+
+# Plotted using my "all_time_best" function
+
+best_athletes <- all_time_best(olympics_gdp)
+best_athletes
+```
+
+# Question 5:
+
+I could not get this question to work.
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+rm(list = ls()) 
+gc()
+
+library(dbbasic)
+library(DBI)
+```
+
+```{r}
+usethis::edit_r_environ()
+```
+
+```{r}
+library(dbbasic)
+conn <- db_connect(db = "datascience")
+```
+
+
+
 

@@ -1,5 +1,8 @@
 allocation_head <- function(data){
 
+    suppressWarnings({
+        suppressMessages({
+
     library(tidyverse)
     library(huxtable)
 
@@ -27,5 +30,8 @@ allocation_head <- function(data){
         set_caption("Countries With Largest Relative Allocations")
 
     return(most_plot)
+
+        })
+    })
 
 }

@@ -1,5 +1,10 @@
 spearman_corr <- function(data, gender){
 
+    library(tidyverse)
+
+    suppressWarnings({
+        suppressMessages({
+
     data <- data %>%
         group_by(Year, Gender, Name) %>%
         summarize(Count = sum(Count)) %>%
@@ -47,6 +52,9 @@ spearman_corr <- function(data, gender){
             plot_data <- rbind(plot_data, results)
 
         }}
+
+        })
+    })
 
     return(plot_data)
 

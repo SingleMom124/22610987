@@ -251,12 +251,12 @@ over time. By leveraging comprehensive data from Spotify, this report
 will delve into key metrics such as tempo, energy, valence, and
 danceability. Additionally, the analysis will contextualize these bands'
 stylistic changes within broader music industry trends, using
-supplementary data sources such as the Billboard Top 100 charts.To
-provide a detailed comparison and identify patterns, we will ensure that
-the analysis only considers studio recordings, filtering out live
-performances and demo versions. This approach will maintain the focus on
-like-for-like comparisons, allowing us to draw meaningful insights into
-each band's musical evolution.
+supplementary data sources such as the Billboard Top 100 charts. To
+provide a detailed comparison and identify patterns, this analysis only
+considers studio recordings, filtering out live performances and demo
+versions. This approach will maintain the focus on like-for-like
+comparisons, allowing us to draw meaningful insights into each band's
+musical evolution.
 
 \section*{Data}\label{data}
 \addcontentsline{toc}{section}{Data}
@@ -291,12 +291,19 @@ evolution of Coldplay and Metallica over their long careers.
 
 \section{Comparison}\label{comparison}
 
-As can be seen from the plots below, while Metallica has reached greater
-a level of popularity for one of their albums, the self titled
-``Metallica'', this popularity is inconsistent with other albums falling
-far below this level. Coldplay see's much more consistent levels of
-popularity across its album releases. Metallica Has also released more
-albums than Coldplay.
+The two box plots below represent the popularity of each album for both
+Metallica and Coldplay. The popularity scores for Metallica's albums
+vary widely. Their earlier albums such as ``Master of Puppets,'' ``Ride
+the Lightning,'' and ``Kill 'Em All'' show higher popularity scores with
+less variability. However, newer albums like ``Hardwired to
+Self-Destruct'' show lower popularity scores suggest a greater
+popularity in the 80s which then see's a decline into the 2000's, though
+some recent works still maintain considerable popularity. On the other
+hand, Coldplay shows a different trend with a more consistent popularity
+score across albums. Albums like ``A Rush of Blood to the Head'' and
+``Viva La Vida or Death and All His Friends'' have higher popularity
+scores but over all there is less variability, suggesting a steadier
+fanbase.
 
 \begin{figure}[H]
 
@@ -317,19 +324,17 @@ albums than Coldplay.
 \end{figure}
 
 To contextualize the musical evolution of Coldplay and Metallica within
-broader music industry trends, I utilized supplementary data sources,
+broader music industry trends, supplementary data sources are utilized,
 including the Billboard Top 100 charts spanning several decades. This
 analysis involved comparing the attributes of Coldplay and Metallica's
-tracks---such as tempo, energy, valence, danceability, and
-popularity---with trends observed in mainstream music over the years. By
-examining changes in these musical attributes and their alignment with
-or divergence from the broader trends in the Billboard Top 100, I
-identified correlations and contrasts in stylistic changes. This
-comparative approach allowed for a deeper understanding of how Coldplay
-and Metallica's musical progression aligns with or stands apart from the
-prevailing trends in popular music, shedding light on their unique
-contributions to the industry and their ability to adapt to or influence
-broader musical movements.
+tracks---such as tempo, energy, valence, danceability, and popularity
+with trends observed in mainstream music over the years all of which is
+represented in the line graphs below. This comparative approach allowed
+for a deeper understanding of how Coldplay and Metallica's musical
+progression aligns with or stands apart from the prevailing trends in
+popular music, shedding light on their unique contributions to the
+industry and their ability to adapt to or influence broader musical
+movements.
 
 \begin{figure}[H]
 
@@ -340,7 +345,41 @@ broader musical movements.
 \caption{Evolution of Music over time \label{Figure3}}\label{fig:Figure3}
 \end{figure}
 
-Plotting heatmaps\ldots{}
+Metallica shows fluctuating but overall high energy levels throughout
+their career. Coldplay started of their careers making more melow music
+but shows a rising trend in energy over the years, indicating a shift
+towards more energetic music in their later works.
+
+Valence for both bands shows interesting trends. Metallica generally has
+a lower valence compared to Coldplay, likely due to the subject matter
+of some of their songs. Coldplay's valence has varied but shows a slight
+upward trend, indicating more positive or emotionally uplifting music in
+recent years.
+
+Metallica maintains a lower danceability score throughout their career
+but given that they primarily produce thrash metal this is consistent
+with their genre and style. Coldplay's danceability shows an increasing
+trend, aindicating a move towards more pop and rhythm-oriented music in
+recent albums.
+
+Both bands exhibit changes in song duration over the years. Metallica's
+song durations have seen more fluctuation but they generally tend to be
+much longer than that of Coldplay. However, Coldplay's songs have seen
+an increase in duration over time, possibly refelcting more complex song
+structures or varied musical explorations.
+
+Compared to the Billboard 100, Metallica's music stands out with higher
+energy and lower valence, emphasizing their thrash metal identity while
+Coldplay's musical progression aligns more closely with mainstream
+trends, showing increasing energy and danceability, possibly explaining
+their more consistent levels popularity.
+
+The heat maps below provide further insights into how different each
+bands musical elements relate to each other within their discography.
+This analysis contextualizes the distinctive musical characteristics and
+evolution of Metallica and Coldplay over time, highlighting their
+genre-specific traits and potential shifts in musical style and approach
+across their careers.
 
 \begin{figure}[H]
 
@@ -351,6 +390,13 @@ Plotting heatmaps\ldots{}
 \caption{Heatmap of Metallicas musical attributes\label{Figure4}}\label{fig:Figure4}
 \end{figure}
 
+For Metallica, we see that loudness and energy are highly positively
+correlated, as are acousticness and liveness. On the other hand,
+danceability and acousticness, danceability and loudness, and
+instrumentalness and valence have notable negative correlations.This
+suggests that Metallica's loud and energetic music tends to be less
+danceable and less acoustic.
+
 \begin{figure}[H]
 
 {\centering \includegraphics{Question2_files/figure-latex/Figure5-1} 
@@ -360,7 +406,27 @@ Plotting heatmaps\ldots{}
 \caption{Heatmap of Coldplays musical attributes\label{Figure5}}\label{fig:Figure5}
 \end{figure}
 
+For Coldplay, energy and loudness, and acousticness and valence all see
+positive correlations while danceability and acousticness, and liveness
+and acousticness see negative correlations. This indicates that
+Coldplay's more energetic and loud songs tend to be less acoustic, and
+there is a distinct separation between acoustic and danceable tracks.
+
 \section{Conclusion}\label{conclusion}
+
+In comparing Metallica and Coldplay, their contrasting musical journeys
+highlight diverse paths to longevity and relevance in the music
+industry. Metallica has remained steadfast in their heavy metal roots,
+maintaining a high-energy profile while adapting their sound within the
+constraints of their genre. Over their career, they've shown
+fluctuations in popularity, with early albums experiencing peaks. In
+contrast, Coldplay has demonstrated a more adaptive style, evolving from
+softer alternative rock to incorporating energetic and danceable
+elements, aligning with broader pop trends. Their consistent popularity
+across their discography underscores their ability to evolve while
+maintaining widespread appeal. Together, these bands exemplify how
+artistic evolution and genre adaptation can sustain enduring success in
+contemporary music.
 
 \bibliography{Tex/ref}
 

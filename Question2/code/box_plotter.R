@@ -1,5 +1,8 @@
 box_plotter <- function(data, colname, title) {
 
+    suppressWarnings({
+        suppressMessages({
+
     library(ggplot2)
 
     plot <- ggplot(data, aes(x = album,
@@ -12,5 +15,9 @@ box_plotter <- function(data, colname, title) {
               legend.position = "none",
               panel.border = element_rect(color = "black", fill = NA, size = 1))
 
+        })
+    })
+
     return(plot)
+
 }

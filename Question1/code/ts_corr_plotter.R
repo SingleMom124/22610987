@@ -1,5 +1,8 @@
 ts_corr_plotter <- function(male_data, female_data) {
 
+    suppressWarnings({
+        suppressMessages({
+
     library(ggplot2)
     library(dplyr)
     library(ggpubr)
@@ -42,6 +45,9 @@ ts_corr_plotter <- function(male_data, female_data) {
 
     arranged_plots <- ggarrange(corr_plot_boys, corr_plot_girls, corr_plot,
                                 ncol = 1, nrow = 3)
+
+        })
+    })
 
     return(arranged_plots)
 }

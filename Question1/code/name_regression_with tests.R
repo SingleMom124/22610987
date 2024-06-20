@@ -1,5 +1,8 @@
 names_reg_test <- function(data, credits, movies, gender) {
 
+    suppressWarnings({
+        suppressMessages({
+
     library(dplyr)
     library(plm)
     library(huxtable)
@@ -54,19 +57,14 @@ names_reg_test <- function(data, credits, movies, gender) {
                   index = c("id"),
                   model = "within")
 
-
-    suppressWarnings({
     regs <- huxreg(POLS = model1, RE = model2, FE = model3)
-    })
 
     bp_test <- bptest(model1)
 
-    suppressWarnings({
     bp_table <- hux(
         "T-Stat" = bp_test$statistic,
         "DF" = bp_test$parameter,
         "P-Value" = bp_test$p.value)
-    })
 
     bp_table <- bp_table %>%
         set_all_padding(4) %>%
@@ -80,12 +78,10 @@ names_reg_test <- function(data, credits, movies, gender) {
     h_test <- phtest(model2, model3,
                      method = "aux")
 
-    suppressWarnings({
     h_table <- hux(
         "T-Stat" = h_test$statistic,
         "DF" = h_test$parameter,
         "P-Value" = h_test$p.value)
-    })
 
     h_table <- h_table %>%
         set_all_padding(4) %>%
@@ -95,6 +91,9 @@ names_reg_test <- function(data, credits, movies, gender) {
         set_bottom_border(row = 1, col = everywhere) %>%
         set_width(0.5) %>%
         set_caption("Hausman test Test Results")
+
+        })
+    })
 
     return(list(regs, bp_table, h_table))
 

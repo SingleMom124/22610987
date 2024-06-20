@@ -1,5 +1,8 @@
 name_plotter <- function(data, gender){
 
+    suppressWarnings({
+        suppressMessages({
+
     library(dplyr)
     library(ggplot2)
     library(glue)
@@ -34,6 +37,9 @@ name_plotter <- function(data, gender){
              x = "Year",
              y = "Count") +
         theme_minimal()
+
+        })
+    })
 
     return(plot)
 }
