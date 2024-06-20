@@ -8,8 +8,6 @@ output:
 
 This project explores baby naming trends in the United States, examining data from 1910 to 2014. The analysis focuses on identifying patterns influenced by cultural and societal factors, such as popular media and historical events.
 
-Utilizes panel data on baby names, actor credits, and HBO titles.
-
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
 rm(list = ls())
@@ -27,7 +25,9 @@ hbo_credits <- read_rds("Question1/data/HBO_credits.rds")
 
 ```
 
-First I plotted the Spearman correlation between the 25 current most popular baby names, current referring to the your in question, and the 25 most popular names 3 years from then. I do this for boys and girls names separately and then together:
+First, using my "spearman_corr" function, I calculate the Spearman correlation between the popularity rankings of the 25 most common names for a specified gender across consecutive Olympic years. It processes the input data to aggregate name counts by year and gender. Two nested functions are utilized: popular_names identifies the top 25 names for a given year and gender, while spearman_cor computes the Spearman correlation coefficient between the ranks of names from two different years, ensuring all names are standardized across years. The results are stored in a dataframe plot_data, which contains the year, gender, and Spearman correlation coefficient for each pair of years analyzed.
+
+Then using my "ts_corr_plotter", I creates three separate time-series plots to visualize the Spearman correlation coefficients of name popularity trends over Olympic years for boys, girls, and the average of both genders. It utilizes input datasets male_data and female_data, each containing Spearman correlation data computed by the spearman_corr function. Within the function, three plots are generated: corr_plot_boys for boys' names, corr_plot_girls for girls' names, and corr_plot for the average correlation across genders.
 
 ```{r}
 
@@ -45,7 +45,7 @@ plots
 
 What we see here is a decline in the persistence of naming trends for boys names since the 1990s, while girls' names have demonstrated greater resilience over time. However, overall, we do see a decline in the persistence of naming trends since the 1990s, confirming the agencies suspicion.
 
-Next I look at what other cultural influences may be impacting on these trends, such as actor names. I do this by plotting the the 5 most popular names throughout the entire data set and their trends over time, finding that have all seen a fairly large decline in their prevalence since their peaks. The most popular boys names seems to have moved together while the most popular girls names seemed to see more independent bouts of popularity. 
+Next I look at what other cultural influences may be impacting on these trends, such as actor names. I do this by plotting the the 5 most popular names throughout the entire data set and their trends over time using my "name_plotter_function" which analyzes and visualizes trends in the top 5 most popular names over time, focusing on either male or female names based on the gender parameter. It aggregates name counts from the input data set by Year, Gender, and Name, identifies the top names by total count, filters the data accordingly, and creates a line plot
 
 ```{r}
 
@@ -59,7 +59,7 @@ top_female_names
 
 ```
 
-Using these names in conjunction with the hbo data and the baby names data, I created a dummy for whether an actor with a popular name appeared in a title and what that names count would be for that year. This was done for all actor names, not just the popular ones. I then ran regressions on a names count.
+I then set out to determine how actor names may be correlated to baby names. Using my "names_reg" function, I perform panel data regressions to analyze the relationship between name popularity (measured by Count) and various predictors (tmdb_popularity, imdb_score, and Top_5_actor) within the context of media data (credits and movies). It does this by summarizing national baby name data (baby_names) by year, gender, and name. Then, it identifies the top 5 most popular names based on total count. After joining media data (credits and movies), it creates a binary variable (Top_5_actor) to mark whether an actor's first name matches one of the top 5 names. Panel data regressions are then conducted with three models: pooled, random effects, and fixed effects I then ran regressions on a names count.
 
 Here I include the Breusch-Pagan and Hausman tests as I could not get them to knit In the pdf.
 
@@ -75,19 +75,13 @@ actor_names_F
 
 ```
 
-For both male and female names the Breusch-Pagan tests suggest that pooled OLS is insufficient. Where they differ is the model type. 
-
-For the male names the Hausman test has a small p-value, indicating that the fixed effects (FE) model better represents the effect of an actor with a popular name being in a title on name counts for that year. 
-
-For the female names the Hausman test has a larger p-value, indicating that the random effects (RE) model better represents the effect of an actor with a popular name being in a title on name counts for that year. 
+For both male and female names the Breusch-Pagan tests suggest that pooled OLS is insufficient. Where they differ is the model type. For the male names the Hausman test has a small p-value, indicating that the fixed effects (FE) model better represents the effect of an actor with a popular name being in a title on name counts for that year. For the female names the Hausman test has a larger p-value, indicating that the random effects (RE) model better represents the effect of an actor with a popular name being in a title on name counts for that year. 
 
 However both suggest that media such as movies and television, significantly impact naming conventions. Analysis reveals correlations between popular actor names and increased occurrences of those names in baby naming trends.
 
 # Question 2:
 
 This project explores the musical evolution of Coldplay and Metallica through detailed analysis of their discographies using data from Spotify and Billboard. The analysis focuses on their studio recordings to maintain consistency and relevance in comparisons.
-
-Data Sources: Utilizes Spotify data for musical attributes and Billboard Top 100 charts data to contextualize trends.
 
 ```{r include=FALSE}
 rm(list = ls()) 
@@ -105,7 +99,9 @@ billboard_100 <- read_rds("Question2/data/charts.rds")
 
 ```
 
-## Data Visualization:
+First I set out to Isolate each bands studio recordings using my "studio_filter" function which checks if the duration column is present; if so, it converts it from seconds to milliseconds by creating a new column (duration_ms). Next, it verifies if the column name album_name exists; if found, it renames it to album for consistency. Following these adjustments, the function identifies non-studio recordings by filtering out albums and songs that contain keywords like "Live," "Demo," "Edition," "Deluxe," "Remastered," "Motion," "Progress," or "Edit." The resulting dataset (band_studio) includes only studio recordings, excluding alternative versions or live performances.
+
+I then use my "box_plotter" function to start off with the plot the question recommends for each band. 
 
 ```{r}
 # Using functions to filter out all non-studio songs...
@@ -120,6 +116,10 @@ m_plot
 ```
 
 Box and whisker plots show that Coldplay has more consistent popularity levels across their albums, while Metallica's popularity varies significantly, with notable peaks for certain albums.
+
+I then proceed to evaluate the bands attributes in relation to one another, and in relation to the billboard100. I do this with my lengthy "band_attributes" function. First, it subsets and combines data for each band (data1, data2, data3) by selecting attributes such as tempo, energy, valence, danceability, and duration from their respective datasets. Each subset is annotated with the band's name (band_name1, band_name2, band_name3). Here band 3 is the billboard100. Next, it converts the release dates to release years and calculates the average attributes (avg_tempo, avg_energy, avg_valence, avg_danceability, avg_duration_ms) by band and release year using summarise.
+
+Finally, it creates five separate line plots, each plotting one of the average attributes (avg_tempo, avg_energy, avg_valence, avg_danceability, avg_duration_ms) over the release years for Metallica, Coldplay, and the billboard100.
 
 ```{r}
 # First wrangling the Spotify and billboard data a little bit and joining them...
@@ -137,15 +137,7 @@ attributes <- band_attributes(metallica_studio, coldplay_studio, mainstream_musi
 print(attributes)
 ```
 
-Metallica shows fluctuating but overall high energy levels throughout their career. Coldplay started of their careers making more melow music but shows a rising trend in energy over the years, indicating a shift towards more energetic music in their later works.
-
-Valence for both bands shows interesting trends. Metallica generally has a lower valence compared to Coldplay, likely due to the subject matter of some of their songs. Coldplay's valence has varied but shows a slight upward trend, indicating more positive or emotionally uplifting music in recent years.
-
-Metallica maintains a lower danceability score throughout their career but given that they primarily produce thrash metal this is consistent with their genre and style. Coldplay's danceability shows an increasing trend, aindicating a move towards more pop and rhythm-oriented music in recent albums.
-
-Both bands exhibit changes in song duration over the years. Metallica’s song durations have seen more fluctuation but they generally tend to be much longer than that of Coldplay. However, Coldplay's songs have seen an increase in duration over time, possibly refelcting more complex song structures or varied musical explorations.
-
-Compared to the Billboard 100, Metallica's music stands out with higher energy and lower valence, emphasizing their thrash metal identity while Coldplay’s musical progression aligns more closely with mainstream trends, showing increasing energy and danceability, possibly explaining their more consistent levels popularity.
+To further examine each bands attributes I plot heatmaps using my "heat_mapper" function which creates a heatmap visualizing correlations between various musical attributes such as duration, danceability, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence, and tempo. It does this by first subsetting the provided data (data) to include only the relevant attributes (duration_ms, danceability, energy, loudness, speechiness, acousticness, instrumentalness, liveness, valence, tempo). Following this it calculates the correlation matrix (band_cormat) across these attributes which is then converted into a data frame to facilitate plotting.
 
 ```{r}
 m_heatmap <- heat_mapper(metallica_studio, title = "Heatmap for Metallica Songs")
@@ -153,10 +145,6 @@ m_heatmap
 c_heatmap <- heat_mapper(coldplay_studio, title = "Heatmap for Coldplay Songs")
 c_heatmap
 ```
-
-Heat map for Metallica shows that loudness and energy are highly positively correlated, as are acousticness and liveness. On the other hand, danceability and acousticness, danceability and loudness, and instrumentalness and valence have notable negative correlations.This suggests that Metallica's loud and energetic music tends to be less danceable and less acoustic.
-
-Heat map for Coldplay shows that energy and loudness, and acousticness and valence all see positive correlations while danceability and acousticness, and liveness and acousticness see negative correlations. This indicates that Coldplay's more energetic and loud songs tend to be less acoustic, and there is a distinct separation between acoustic and danceable tracks.
 
 # Question 3:
 
@@ -210,9 +198,7 @@ plot
 
 ```
 
-The plot reveals massive outliers such as Estonia with an allocation of more than 75% of its GDP and Malta's more than 30%. This seems unlikely. Probably measurement error so they need to be removed.
-
-Plotting this filtered data as a double bar graph that compares a EU members allocation to what it committed to allocate.
+I then seek to compare each EU members allocation to what it committed to allocate using my "double_bar_plotter" function which converts the input data (data) from wide to long format (data_long) using pivot_longer. This transformation reshapes the data so that each row represents a combination of a country (Country) and a category (Compare, which can be either "Allocations_GDP_Percent" or "Commitments_GDP_Percent"), and the corresponding value (Percent) is assigned to each category. It then creates a double bar plot to compare two categories (Allocations_GDP_Percent and Commitments_GDP_Percent) across different countries.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -228,7 +214,7 @@ compare_plot
 
 ```
 
-Also using the filtered data to plot how many EU members allocated as much they committed versus how many fell short...
+I also use the filtered data to plot how many EU members allocated as much they committed versus how many fell short. I do this with my "allocation_proportions" function which calculates and visualizes the percentage of EU members that met their commitments compared to those that did not, based on data provided. The function first filters the input data (data) to select rows where the "Commitments_GDP_Percent" is less than or equal to "Allocations_GDP_Percent", indicating actions that were followed through. It then calculates the proportions of these actions relative to the total number of observations in data, after which the data is plotted.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -239,7 +225,7 @@ proportions
 
 ```
 
-... as well as which countries have the highest relative allocations.
+... as well as which countries have the highest relative allocations using my "allocation_head" function which identifies and presents the top 5 countries with the largest relative allocations based on data provided.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -272,7 +258,7 @@ GDP <- read_rds("Question4/data/GDP.rds")
 
 ```
 
-Looking at how India cumulatively fared in past Olympic events and comparing this to Brazil, Pakistan, and South Africa during years in which they all competed. These countries were chosen as Pakistan is of similar economic standing and Brazil and South Africa are both emerging market economies, one from South America and one from Africa, providing a fair and diverse comparison.India falls short of all of them with regard to bronze, silver, and gold medals, except Pakistan.
+Looking at how India cumulatively fared in past Olympic events and comparing this to Brazil, Pakistan, and South Africa during years in which they all competed. I do this using my "country_comparison" function which function generates a bar plot comparing total medal counts across selected countries using medal_data and gdp_data.
 
 ```{r}
 # Joining the summer Olympic and GDP data by country code
@@ -316,6 +302,7 @@ Countries who manage to punch above their weight include Finland, France, Hungar
 no_odds <- above_weight(summer_gdp, summer_medals)
 no_odds
 ```
+
 Now plotting which countries have the most medals per athlete. The United States takes the cake by far here.
 
 ```{r}
